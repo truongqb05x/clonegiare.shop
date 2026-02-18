@@ -9,23 +9,181 @@
     <link rel="stylesheet" href="/static/css/layout.css">
     <link rel="stylesheet" href="/static/css/pages/api.css">
 
-        </head><body>< !-- Header (Synced) --><header><div class="container"><div class="header-top"><a href="/" class="logo"><i class="fab fa-facebook-square"></i><span>FB</span>Store </a><div class="header-actions"><div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)"><a href="javascript:void(0)" class="btn-header"><i class="fas fa-ellipsis-v"></i><span>Khác</span></a><div class="misc-dropdown" id="miscDropdown"><a href="/api"><i class="fas fa-code"></i>API</a><a href="/support"><i class="fas fa-headset"></i>Hỗ trợ</a><a href="/blog"><i class="fas fa-newspaper"></i>Blog</a></div></div><div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)"><a href="javascript:void(0)" class="btn-header"><i class="fas fa-tools"></i><span>Công cụ</span></a><div class="tools-dropdown" id="toolsDropdown"><a href="#/check-live">Check Live UID</a><a href="#/random-face">Random Face</a></div></div><a href="/deposit" class="btn-header"><i class="fas fa-wallet"></i><span>Nạp tiền</span></a><a href="/history" class="btn-header"><i class="fas fa-history"></i><span>Lịch sử</span></a><div class="user-profile-container"><div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div><div class="user-dropdown" id="userDropdown"><a href="/profile">Hồ sơ cá nhân</a><a href="/history">Lịch sử đơn hàng</a><a href="/deposit">Nạp tiền</a><div class="divider"></div><a href="/logout">Đăng xuất</a></div></div></div></div><nav><ul class="nav-menu"><li><a href="/">Trang chủ</a></li><li><a href="/deposit">Nạp tiền</a></li><li><a href="/history">Lịch sử đơn hàng</a></li><li><a href="/profile">Hồ sơ cá nhân</a></li></ul></nav></div></header><main class="container"><div class="api-wrapper"><div class="card"><div class="card-header"><i class="fas fa-code"></i>Tài Liệu Tích Hợp API </div><div class="card-body">< !-- API Key Section --><div class="api-row"><span class="api-label">API Key:</span><div class="api-key-container"><span class="api-key-text"
-        id="apiKey">7a40************************************************k9H5</span><div style="display: flex; gap: 8px;"><button class="btn-icon btn-view" title="Xem" onclick="toggleApiKey()"><i class="fas fa-eye-slash"></i></button><button class="btn-icon btn-refresh" title="Làm mới"><i class="fas fa-sync-alt"></i></button></div></div></div>< !-- IP Whitelist Section --><div class="api-row" style="align-items: flex-start;"><span class="api-label">Danh sách IP Whitelist:</span><div style="flex: 1;"><textarea class="textarea-ip"
-        placeholder="Nhập danh sách IP được phép truy cập API (mỗi dòng 1 IP)"></textarea><button class="btn-icon btn-save"><i class="fas fa-save"></i>Lưu danh sách IP</button><div class="ip-note"><i class="fas fa-info-circle"></i>Để trống để cho phép tất cả IP truy cập API </div></div></div><hr style="margin: 40px 0; border: 0; border-top: 1px solid var(--border-color);">< !-- API List --><div class="api-section"><span class="api-label" style="width: 100%; margin-bottom: 20px; font-size: 18px;">API Endpoints</span>< !-- Account Info --><div class="api-endpoint-card"><div class="api-endpoint-row"><span class="api-label" style="width: 250px;">Lấy thông tin tài khoản</span><span class="badge-method badge-get">GET</span><span class="endpoint-url">https: //mijcloud.com/api/profile.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
-        <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i class="fas fa-copy"></i>Copy</button></div></div>< !-- Products Info --><div class="api-endpoint-card"><div class="api-endpoint-row"><span class="api-label" style="width: 250px;">Lấy danh sách chuyên mục và sản phẩm</span><span class="badge-method badge-get">GET</span><span class="endpoint-url">https: //mijcloud.com/api/products.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
-        <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i class="fas fa-copy"></i>Copy</button></div></div>< !-- Product Detail --><div class="api-endpoint-card"><div class="api-endpoint-row"><span class="api-label" style="width: 250px;">Lấy chi tiết sản phẩm</span><span class="badge-method badge-get">GET</span><span class="endpoint-url">https: //mijcloud.com/api/product.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
-        <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i class="fas fa-copy"></i>Copy</button></div></div>< !-- Order Detail --><div class="api-endpoint-card"><div class="api-endpoint-row"><span class="api-label" style="width: 250px;">Lấy chi tiết đơn hàng</span><span class="badge-method badge-get">GET</span><span class="endpoint-url">https: //mijcloud.com/api/order.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
-        <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i class="fas fa-copy"></i>Copy</button></div></div>< !-- Purchase --><div class="api-endpoint-card"><div class="api-endpoint-row"><span class="api-label" style="width: 250px;">Mua hàng</span><span class="badge-method badge-post">POST or GET</span><span class="endpoint-url">https: //mijcloud.com/api/buy_product</span>
+</head>
 
-        <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i class="fas fa-copy"></i>Copy</button></div><div class="api-details"><div class="param-list"><div class="param-item"><b>form-data:</b></div><div class="param-item"><span class="param-name">action:</span>buyProduct</div><div class="param-item"><span class="param-name">id:</span>ID sản phẩm cần mua </div><div class="param-item"><span class="param-name">amount:</span>Số lượng cần mua </div><div class="param-item"><span class="param-name">coupon:</span>Mã giảm giá nếu có </div><div class="param-item"><span class="param-name">api_key:</span>7a40************************************************k9H5</div></div><div style="margin-bottom: 10px; font-weight: 600;">Response:</div><div class="json-response"> {
-            "status": "success",
-                "msg": "Tạo đơn hàng thành công!",
-                "trans_id": "JF465f728224ce11",
-                "data": [ "1000040304952|GUTJXYIFPWLHCNDOMBRKVAQESZ",
-                ...]
-        }
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top"><a href="/" class="logo"><i class="fab fa-facebook-square"></i><span>FB</span>Store
+                </a>
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)"><a
+                            href="javascript:void(0)" class="btn-header"><i
+                                class="fas fa-ellipsis-v"></i><span>Khác</span></a>
+                        <div class="misc-dropdown" id="miscDropdown"><a href="/api"><i class="fas fa-code"></i>API</a><a
+                                href="/support"><i class="fas fa-headset"></i>Hỗ trợ</a><a href="/blog"><i
+                                    class="fas fa-newspaper"></i>Blog</a></div>
+                    </div>
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)"><a
+                            href="javascript:void(0)" class="btn-header"><i class="fas fa-tools"></i><span>Công
+                                cụ</span></a>
+                        <div class="tools-dropdown" id="toolsDropdown"><a href="#/check-live">Check Live UID</a><a
+                                href="#/random-face">Random Face</a></div>
+                    </div><a href="/deposit" class="btn-header"><i class="fas fa-wallet"></i><span>Nạp tiền</span></a><a
+                        href="/history" class="btn-header"><i class="fas fa-history"></i><span>Lịch sử</span></a>
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown"><a href="/profile">Hồ sơ cá nhân</a><a
+                                href="/history">Lịch sử đơn hàng</a><a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div><a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/deposit">Nạp tiền</a></li>
+                    <li><a href="/history">Lịch sử đơn hàng</a></li>
+                    <li><a href="/profile">Hồ sơ cá nhân</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="api-wrapper">
+            <div class="card">
+                <div class="card-header"><i class="fas fa-code"></i>Tài Liệu Tích Hợp API </div>
+                <div class="card-body">
+                    < !-- API Key Section -->
+                        <div class="api-row"><span class="api-label">API Key:</span>
+                            <div class="api-key-container"><span class="api-key-text"
+                                    id="apiKey">7a40************************************************k9H5</span>
+                                <div style="display: flex; gap: 8px;"><button class="btn-icon btn-view" title="Xem"
+                                        onclick="toggleApiKey()"><i class="fas fa-eye-slash"></i></button><button
+                                        class="btn-icon btn-refresh" title="Làm mới"><i
+                                            class="fas fa-sync-alt"></i></button></div>
+                            </div>
+                        </div>
+                        < !-- IP Whitelist Section -->
+                            <div class="api-row" style="align-items: flex-start;"><span class="api-label">Danh sách IP
+                                    Whitelist:</span>
+                                <div style="flex: 1;"><textarea class="textarea-ip"
+                                        placeholder="Nhập danh sách IP được phép truy cập API (mỗi dòng 1 IP)"></textarea><button
+                                        class="btn-icon btn-save"><i class="fas fa-save"></i>Lưu danh sách IP</button>
+                                    <div class="ip-note"><i class="fas fa-info-circle"></i>Để trống để cho phép tất cả
+                                        IP truy cập API </div>
+                                </div>
+                            </div>
+                            <hr style="margin: 40px 0; border: 0; border-top: 1px solid var(--border-color);">
+                            < !-- API List -->
+                                <div class="api-section"><span class="api-label"
+                                        style="width: 100%; margin-bottom: 20px; font-size: 18px;">API Endpoints</span>
+                                    < !-- Account Info -->
+                                        <div class="api-endpoint-card">
+                                            <div class="api-endpoint-row"><span class="api-label"
+                                                    style="width: 250px;">Lấy thông tin tài khoản</span><span
+                                                    class="badge-method badge-get">GET</span><span
+                                                    class="endpoint-url">https:
+                                                    //mijcloud.com/api/profile.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
+                                                <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i
+                                                        class="fas fa-copy"></i>Copy</button>
+                                            </div>
+                                        </div>
+                                        < !-- Products Info -->
+                                            <div class="api-endpoint-card">
+                                                <div class="api-endpoint-row"><span class="api-label"
+                                                        style="width: 250px;">Lấy danh sách chuyên mục và sản
+                                                        phẩm</span><span class="badge-method badge-get">GET</span><span
+                                                        class="endpoint-url">https:
+                                                        //mijcloud.com/api/products.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
+                                                    <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i
+                                                            class="fas fa-copy"></i>Copy</button>
+                                                </div>
+                                            </div>
+                                            < !-- Product Detail -->
+                                                <div class="api-endpoint-card">
+                                                    <div class="api-endpoint-row"><span class="api-label"
+                                                            style="width: 250px;">Lấy chi tiết sản phẩm</span><span
+                                                            class="badge-method badge-get">GET</span><span
+                                                            class="endpoint-url">https:
+                                                            //mijcloud.com/api/product.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
+                                                        <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i
+                                                                class="fas fa-copy"></i>Copy</button>
+                                                    </div>
+                                                </div>
+                                                < !-- Order Detail -->
+                                                    <div class="api-endpoint-card">
+                                                        <div class="api-endpoint-row"><span class="api-label"
+                                                                style="width: 250px;">Lấy chi tiết đơn hàng</span><span
+                                                                class="badge-method badge-get">GET</span><span
+                                                                class="endpoint-url">https:
+                                                                //mijcloud.com/api/order.php?api_key=7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3</span>
+                                                            <button class="btn-icon btn-copy" onclick="copyUrl(this)"><i
+                                                                    class="fas fa-copy"></i>Copy</button>
+                                                        </div>
+                                                    </div>
+                                                    < !-- Purchase -->
+                                                        <div class="api-endpoint-card">
+                                                            <div class="api-endpoint-row"><span class="api-label"
+                                                                    style="width: 250px;">Mua hàng</span><span
+                                                                    class="badge-method badge-post">POST or
+                                                                    GET</span><span class="endpoint-url">https:
+                                                                    //mijcloud.com/api/buy_product</span>
 
-        </div></div></div></div></div></div></div></main>< !-- Footer (Synced) --><footer><div class="container"><div class="footer-bottom"><div class="footer-version"><span class="version-badge">Version 7.9.7</span><span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span></div><p class="developer-credit">Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a></p></div></div></footer><script> // Dropdown Handlers
+                                                                <button class="btn-icon btn-copy"
+                                                                    onclick="copyUrl(this)"><i
+                                                                        class="fas fa-copy"></i>Copy</button>
+                                                            </div>
+                                                            <div class="api-details">
+                                                                <div class="param-list">
+                                                                    <div class="param-item"><b>form-data:</b></div>
+                                                                    <div class="param-item"><span
+                                                                            class="param-name">action:</span>buyProduct
+                                                                    </div>
+                                                                    <div class="param-item"><span
+                                                                            class="param-name">id:</span>ID sản phẩm cần
+                                                                        mua </div>
+                                                                    <div class="param-item"><span
+                                                                            class="param-name">amount:</span>Số lượng
+                                                                        cần mua </div>
+                                                                    <div class="param-item"><span
+                                                                            class="param-name">coupon:</span>Mã giảm giá
+                                                                        nếu có </div>
+                                                                    <div class="param-item"><span
+                                                                            class="param-name">api_key:</span>7a40************************************************k9H5
+                                                                    </div>
+                                                                </div>
+                                                                <div style="margin-bottom: 10px; font-weight: 600;">
+                                                                    Response:</div>
+                                                                <div class="json-response"> {
+                                                                    "status": "success",
+                                                                    "msg": "Tạo đơn hàng thành công!",
+                                                                    "trans_id": "JF465f728224ce11",
+                                                                    "data": [
+                                                                    "1000040304952|GUTJXYIFPWLHCNDOMBRKVAQESZ",
+                                                                    ...]
+                                                                    }
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version"><span class="version-badge">Version 7.9.7</span><span>© 2023 FBStore. Tất cả
+                        các quyền được bảo lưu.</span></div>
+                <p class="developer-credit">Powered By <a href="https://cmsnt.co" target="_blank"
+                        class="developer-link">CMSNT.CO</a></p>
+            </div>
+        </div>
+    </footer>
+    <script> // Dropdown Handlers
 
         function toggleUserMenu(event) {
             event.stopPropagation();
@@ -48,13 +206,13 @@
             document.getElementById('toolsDropdown').classList.remove('active');
         }
 
-        window.onclick=function (event) {
-            const userDropdown=document.getElementById('userDropdown');
-            const userAvatar=document.getElementById('userAvatar');
-            const toolsDropdown=document.getElementById('toolsDropdown');
-            const toolsContainer=document.getElementById('toolsContainer');
-            const miscDropdown=document.getElementById('miscDropdown');
-            const miscContainer=document.getElementById('miscContainer');
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
 
             if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
                 userDropdown.classList.remove('active');
@@ -71,38 +229,41 @@
 
 
         // API Key Toggle
-        let apiKeyHidden=true;
-        const rawApiKey="7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3";
-        const maskedApiKey="7a40************************************************k9H5";
+        let apiKeyHidden = true;
+        const rawApiKey = "7a40dc99e8479bb55deb23e52df9143b00Rcl6aAfytbuzJBel1YowG3";
+        const maskedApiKey = "7a40************************************************k9H5";
 
         function toggleApiKey() {
-            const keyEl=document.getElementById('apiKey');
-            const btn=event.currentTarget;
+            const keyEl = document.getElementById('apiKey');
+            const btn = event.currentTarget;
 
             if (apiKeyHidden) {
-                keyEl.innerText=rawApiKey;
-                btn.innerHTML='<i class="fas fa-eye"></i>';
+                keyEl.innerText = rawApiKey;
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
             }
 
             else {
-                keyEl.innerText=maskedApiKey;
-                btn.innerHTML='<i class="fas fa-eye-slash"></i>';
+                keyEl.innerText = maskedApiKey;
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
             }
 
-            apiKeyHidden= !apiKeyHidden;
+            apiKeyHidden = !apiKeyHidden;
         }
 
-        function copyUrl(btn){
-        const url=btn.previousElementSibling.innerText;
-        navigator.clipboard.writeText(url);
-        const original=btn.innerHTML;
-        btn.innerHTML='<i class="fas fa-check"></i>';
+        function copyUrl(btn) {
+            const url = btn.previousElementSibling.innerText;
+            navigator.clipboard.writeText(url);
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i>';
 
-        setTimeout(()=> {
-                btn.innerHTML=original;
+            setTimeout(() => {
+                btn.innerHTML = original;
             }
 
-            , 2000);
+                , 2000);
         }
 
-        </script></body></html>
+    </script>
+</body>
+
+</html>
