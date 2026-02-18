@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FBStore - Shop Bán Acc Facebook, Via, Clone, BM Chất Lượng Số 1{% endblock %}</title>
+
+    <!-- Meta SEO Cơ Bản -->
+    <meta name="description"
+        content="{% block meta_description %}Hệ thống cung cấp tài khoản Facebook, Via cổ, Clone, Fanpage, BM quảng cáo uy tín, chất lượng. Bảo hành 1 đổi 1, hỗ trợ 24/7.{% endblock %}">
+    <meta name="keywords"
+        content="{% block meta_keywords %}mua via facebook, mua clone facebook, mua bm, shop acc fb, tai khoan quang cao{% endblock %}">
+    <meta name="robots" content="index, follow">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/layout.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Khác</span>
+                        </a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api"> API</a>
+                            <a href="/support"> Hỗ trợ</a>
+                            <a href="/blog"> Blog</a>
+                        </div>
+                    </div>
+
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Công cụ</span>
+                        </a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+
+                    <a href="/deposit" class="btn-header">
+                        <span>Nạp tiền</span>
+                    </a>
+
+                    <a href="/history" class="btn-header">
+                        <span>Lịch sử</span>
+                    </a>
+
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="/profile">Hồ sơ cá nhân</a>
+                            <a href="/history">Lịch sử đơn hàng</a>
+                            <a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div>
+                            <a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/" class="{% if active_page == 'home' %}active{% endif %}">Trang chủ</a></li>
+                    <li><a href="/deposit" class="{% if active_page == 'deposit' %}active{% endif %}">Nạp tiền</a></li>
+                    <li><a href="/history" class="{% if active_page == 'history' %}active{% endif %}">Lịch sử đơn
+                            hàng</a></li>
+                    <li><a href="/profile" class="{% if active_page == 'profile' %}active{% endif %}">Hồ sơ cá nhân</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Content -->
+    <main class="container">
+        {% block content %}
+        <!-- NỘI DUNG TRANG CON SẼ DÁN VÀO ĐÂY -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dropdown Handlers (Common)
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
+
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (toolsDropdown && toolsDropdown.classList.contains('active') && !toolsContainer.contains(event.target)) {
+                toolsDropdown.classList.remove('active');
+            }
+            if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
+                miscDropdown.classList.remove('active');
+            }
+        }
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FBStore - Shop Bán Acc Facebook, Via, Clone, BM Chất Lượng Số 1</title>
+
+<!-- Meta SEO Cơ Bản -->
+<meta name="description"
+    content="Hệ thống cung cấp tài khoản Facebook, Via cổ, Clone, Fanpage, BM quảng cáo uy tín, chất lượng. Bảo hành 1 đổi 1, hỗ trợ 24/7.">
+<meta name="keywords" content="mua via facebook, mua clone facebook, mua bm, shop acc fb, tai khoan quang cao">
+<meta name="robots" content="index, follow">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* --- CSS Global & Variables (From Index.html) --- */
+    :root {
+        --primary-color: #1877F2;
+        --secondary-color: #42B72A;
+        --dark-color: #1C1E21;
+        --light-color: #F0F2F5;
+        --text-color: #050505;
+        --gray-color: #65676B;
+        --border-color: #DADDE1;
+        --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: var(--light-color);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    /* Visually Hidden */
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+
+    /* --- Header Styles --- */
+    header {
+        background-color: white;
+        box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+
+    .logo i {
+        color: var(--primary-color);
+    }
+
+    .logo span {
+        color: var(--secondary-color);
+    }
+
+    /* FB (blue) Store (green) ? No, index has <span>FB</span>Store */
+    .logo span {
+        color: var(--primary-color);
+    }
+
+    /* Adjusting to match index.html logic if needed, but in index line 1407 it's <span>FB</span>Store */
+
+    .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .btn-header {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--gray-color);
+        padding: 8px 16px;
+        border-radius: 8px;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-header:hover {
+        color: var(--primary-color);
+    }
+
+    /* Dropdowns */
+    .misc-container,
+    .tools-container,
+    .user-profile-container {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .misc-dropdown,
+    .tools-dropdown,
+    .user-dropdown {
+        position: absolute;
+        top: calc(100% - 10px);
+        /* Overlap to bridge the hover gap */
+        right: 0;
+        background-color: white;
+        min-width: 180px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        border-radius: 12px;
+        padding: 8px 0;
+        display: none;
+        z-index: 1000;
+        border: 1px solid var(--border-color);
+        animation: slideUpShort 0.2s ease;
+    }
+
+    .misc-container:hover .misc-dropdown,
+    .tools-container:hover .tools-dropdown,
+    .user-profile-container:hover .user-dropdown {
+        display: block;
+    }
+
+    .misc-container,
+    .tools-container,
+    .user-profile-container {
+        position: relative;
+        padding-bottom: 10px;
+        /* Bridge the hover area */
+        margin-bottom: -10px;
+    }
+
+    .misc-dropdown,
+    .tools-dropdown {
+        left: 0;
+        right: auto;
+    }
+
+    .misc-dropdown.active,
+    .tools-dropdown.active,
+    .user-dropdown.active {
+        display: block;
+    }
+
+    @keyframes slideUpShort {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .misc-dropdown a,
+    .tools-dropdown a,
+    .user-dropdown a {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 20px;
+        color: var(--gray-color);
+        font-size: 14px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .misc-dropdown a:hover,
+    .tools-dropdown a:hover,
+    .user-dropdown a:hover {
+        background-color: var(--light-color);
+        color: var(--primary-color);
+        padding-left: 24px;
+    }
+
+    .user-dropdown .divider {
+        height: 1px;
+        background-color: var(--border-color);
+        margin: 8px 0;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        transition: var(--transition);
+    }
+
+    .user-avatar:hover {
+        box-shadow: 0 0 15px rgba(24, 119, 242, 0.4);
+        filter: brightness(1.1);
+    }
+
+    /* Navigation */
+    nav {
+        padding: 10px 0;
+        background-color: white;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 10px;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 12px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 5px 0;
+    }
+
+    .nav-menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .nav-menu a {
+        font-weight: 500;
+        color: #65676b;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s ease;
+        background-color: #f0f2f5;
+        border-radius: 20px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .nav-menu a:hover {
+        background-color: #e4e6eb;
+        color: #1c1e21;
+    }
+
+    .nav-menu a.active {
+        background: linear-gradient(135deg, #1877F2 0%, #42B72A 100%);
+        color: white;
+        box-shadow: 0 4px 10px rgba(24, 119, 242, 0.2);
+    }
+
+    /* --- Footer --- */
+    footer {
+        background-color: #1c1e21;
+        padding: 40px 0 20px;
+        margin-top: 50px;
+        color: white;
+    }
+
+    .footer-bottom {
+        padding-top: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .footer-version {
+        font-size: 13px;
+        color: #B0B3B8;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        line-height: 1.6;
+    }
+
+    .version-badge {
+        background: rgba(24, 119, 242, 0.15);
+        color: #1877F2;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid rgba(24, 119, 242, 0.3);
+        text-transform: uppercase;
+        animation: pulse-blue 2s infinite;
+    }
+
+    @keyframes pulse-blue {
+        0% {
+            box-shadow: 0 0 0 0 rgba(24, 119, 242, 0.4);
+        }
+
+        70% {
+            box-shadow: 0 0 0 6px rgba(24, 119, 242, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(24, 119, 242, 0);
+        }
+    }
+
+    .developer-link {
+        background: linear-gradient(90deg, #1877F2, #42B72A);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    @media (max-width: 600px) {
+        .btn-header {
+            padding: 8px !important;
+            border-radius: 50%;
+            background-color: var(--light-color);
+        }
+
+        .btn-header span {
+            display: none;
+        }
+
+        .btn-header i {
+            font-size: 18px;
+            margin: 0;
+            display: inline-block;
+        }
+
+        .footer-version {
+            flex-direction: column;
+            gap: 8px;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <i class="fas fa-ellipsis-v"></i> <span>Khác</span>
+                        </a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api"><i class="fas fa-code"></i> API</a>
+                            <a href="/support"><i class="fas fa-headset"></i> Hỗ trợ</a>
+                            <a href="/blog"><i class="fas fa-newspaper"></i> Blog</a>
+                        </div>
+                    </div>
+
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <i class="fas fa-tools"></i> <span>Công cụ</span>
+                        </a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+
+                    <a href="/deposit" class="btn-header">
+                        <i class="fas fa-wallet"></i> <span>Nạp tiền</span>
+                    </a>
+
+                    <a href="/history" class="btn-header">
+                        <i class="fas fa-history"></i> <span>Lịch sử</span>
+                    </a>
+
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="/profile">Hồ sơ cá nhân</a>
+                            <a href="/history">Lịch sử đơn hàng</a>
+                            <a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div>
+                            <a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/" class="active">Trang chủ</a></li>
+                    <li><a href="#/tai-khoan-friend">Tài khoản Friend</a></li>
+                    <li><a href="#/tai-khoan-fanpage">Tài khoản Fanpage</a></li>
+                    <li><a href="#/tai-khoan-ads">Tài khoản ADS</a></li>
+                    <li><a href="#/tai-khoan-game">Tài khoản Game</a></li>
+                    <li><a href="#/tai-khoan-vip">Tài khoản VIP</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Content Placeholder -->
+    <main class="container">
+        <!-- NỘI DUNG TRANG CON SẼ DÁN VÀO ĐÂY -->
+        <h1 class="visually-hidden">Layout FBStore - Hệ thống uy tín số 1 Việt Nam</h1>
+        <div style="padding: 100px 0; text-align: center;">
+            <h2 style="font-size: 32px; color: var(--dark-color);">Chào mừng bạn đến với FBStore</h2>
+            <p style="color: var(--gray-color); margin-top: 20px;">Nội dung của bạn sẽ được hiển thị tại đây.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dropdown Handlers
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
+
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (toolsDropdown && toolsDropdown.classList.contains('active') && !toolsContainer.contains(event.target)) {
+                toolsDropdown.classList.remove('active');
+            }
+            if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
+                miscDropdown.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+
+</html>

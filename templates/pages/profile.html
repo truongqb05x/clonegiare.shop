@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ cá nhân - FBStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/pages/profile.css">
+</head>
+
+<body>
+    <!-- Header (Synced) -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Khác</span>
+                        </a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api"> API</a>
+                            <a href="/support"> Hỗ trợ</a>
+                            <a href="/blog"> Blog</a>
+                        </div>
+                    </div>
+
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Công cụ</span>
+                        </a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+
+                    <a href="/deposit" class="btn-header">
+                        <span>Nạp tiền</span>
+                    </a>
+
+                    <a href="/history" class="btn-header">
+                        <span>Lịch sử</span>
+                    </a>
+
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="/profile">Hồ sơ cá nhân</a>
+                            <a href="/history">Lịch sử đơn hàng</a>
+                            <a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div>
+                            <a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/deposit">Nạp tiền</a></li>
+                    <li><a href="/history">Lịch sử đơn hàng</a></li>
+                    <li><a href="/profile" class="active">Hồ sơ cá nhân</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="profile-wrapper">
+            <!-- Wallet Card -->
+            <section class="profile-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-wallet"></i> Ví của tôi</h2>
+                </div>
+                <div class="wallet-display">
+                    <div class="balance-main">
+                        <p class="balance-label">Số dư hiện tại</p>
+                        <p class="balance-value" id="balanceDisplay">...</p>
+                    </div>
+                    <div class="wallet-stats">
+                        <div class="stat-box">
+                            <p class="stat-label">Tổng tiền nạp</p>
+                            <p class="stat-value" id="totalDeposited">...</p>
+                        </div>
+                        <div class="stat-box">
+                            <p class="stat-label">Số dư đã sử dụng</p>
+                            <p class="stat-value" id="totalUsed">...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Info Card -->
+            <section class="profile-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-user-circle"></i> Hồ sơ của bạn</h2>
+                    <button class="btn-edit">Chỉnh sửa thông tin</button>
+                </div>
+                <div class="profile-grid">
+                    <div class="info-group">
+                        <p class="info-label">Tên đăng nhập</p>
+                        <div class="info-box" id="displayUsername">...</div>
+                    </div>
+                    <div class="info-group">
+                        <p class="info-label">Địa chỉ Email</p>
+                        <div class="info-box" id="displayEmail">...</div>
+                    </div>
+                    <div class="info-group">
+                        <p class="info-label">Số điện thoại</p>
+                        <div class="info-box" id="displayPhone">Chưa cập nhật</div>
+                    </div>
+                    <div class="info-group">
+                        <p class="info-label">Họ và Tên</p>
+                        <div class="info-box" id="displayFullname">Chưa cập nhật</div>
+                    </div>
+                    <div class="info-group">
+                        <p class="info-label">Telegram Chat ID</p>
+                        <div class="info-box" id="displayTelegram">Chưa cập nhật</div>
+                    </div>
+                    <div class="info-group">
+                        <p class="info-label">Ngày đăng ký</p>
+                        <div class="info-box" id="displayDate">...</div>
+                    </div>
+                    <div class="info-group full-width">
+                        <p class="info-label">Thiết bị</p>
+                        <div class="info-box">Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like
+                            Gecko) Chrome/120.0.0.0 Safari/537.36</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Change Password Card -->
+            <section class="profile-card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-shield-alt"></i> Thay đổi mật khẩu</h2>
+                </div>
+                <form class="form-grid">
+                    <div class="input-group">
+                        <label class="info-label">Mật khẩu hiện tại</label>
+                        <input type="password" id="currentPass" class="input-box" placeholder="Nhập mật khẩu cũ"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <label class="info-label">Mật khẩu mới</label>
+                        <input type="password" id="newPass" class="input-box" placeholder="Nhập mật khẩu mới" required>
+                    </div>
+                    <div class="input-group">
+                        <label class="info-label">Nhập lại mật khẩu mới</label>
+                        <input type="password" id="confirmPass" class="input-box" placeholder="Xác nhận mật khẩu mới"
+                            required>
+                    </div>
+                    <div class="input-group">
+                        <button type="submit" class="btn-update">Cập nhật mật khẩu</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer (Synced) -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center;">
+        <div
+            style="background: white; width: 90%; max-width: 500px; padding: 30px; border-radius: 15px; position: relative; animation: slideUpShort 0.3s ease;">
+            <h3 style="margin-bottom: 20px; color: var(--dark-color);">Chỉnh sửa thông tin</h3>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label class="info-label">Họ và Tên</label>
+                <input type="text" id="editFullname" class="input-box" placeholder="Nhập họ và tên">
+            </div>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label class="info-label">Số điện thoại</label>
+                <input type="text" id="editPhone" class="input-box" placeholder="Nhập số điện thoại">
+            </div>
+            <div class="input-group" style="margin-bottom: 20px;">
+                <label class="info-label">Telegram Chat ID</label>
+                <input type="text" id="editTelegram" class="input-box" placeholder="Nhập Telegram ID">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button onclick="closeEditModal()"
+                    style="padding: 10px 20px; border-radius: 8px; border: 1px solid var(--border-color); background: #f0f2f5; cursor: pointer;">Hủy</button>
+                <button onclick="saveProfile()"
+                    style="padding: 10px 20px; border-radius: 8px; border: none; background: var(--teal-accent); color: white; cursor: pointer;">Lưu
+                    thay đổi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal (Login Style) -->
+    <div class="modal-overlay" id="notifyModal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modalIcon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="modal-title" id="modalTitle">Thành công!</h3>
+            <p class="modal-message" id="modalMessage">Hành động của bạn đã được thực hiện.</p>
+            <div class="modal-loader">
+                <div class="loader-bar" id="loaderBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dropdown Handlers
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
+
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (toolsDropdown && toolsDropdown.classList.contains('active') && !toolsContainer.contains(event.target)) {
+                toolsDropdown.classList.remove('active');
+            }
+            if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
+                miscDropdown.classList.remove('active');
+            }
+
+            // Close modal when clicking outside
+            const modal = document.getElementById('editProfileModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+
+        // Notification System
+        function showNotify(type, title, message, duration = 2000) {
+            const modal = document.getElementById('notifyModal');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const loader = document.getElementById('loaderBar');
+
+            // Reset loader
+            loader.style.transition = 'none';
+            loader.style.width = '0%';
+
+            // Set content
+            titleEl.innerText = title;
+            messageEl.innerText = message;
+
+            if (type === 'success') {
+                icon.className = 'modal-icon icon-success';
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+                loader.style.background = 'var(--secondary-color)';
+            } else {
+                icon.className = 'modal-icon icon-error';
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                loader.style.background = '#ef4444';
+            }
+
+            modal.classList.add('active');
+
+            // Start loader
+            setTimeout(() => {
+                loader.style.transition = `width ${duration}ms linear`;
+                loader.style.width = '100%';
+            }, 50);
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    resolve();
+                }, duration + 300);
+            });
+        }
+
+        // --- Profile Logic ---
+        async function loadProfile() {
+            try {
+                const response = await fetch('/api/user/profile');
+                const data = await response.json();
+
+                if (data.success) {
+                    const profile = data.profile;
+                    const stats = data.stats;
+
+                    // Header Info
+                    document.getElementById('userAvatar').textContent = profile.username.substring(0, 2).toUpperCase();
+
+                    // Wallet Stats
+                    document.getElementById('balanceDisplay').textContent = parseFloat(profile.balance).toLocaleString('vi-VN') + 'xu';
+                    document.getElementById('totalDeposited').textContent = stats.total_deposited.toLocaleString('vi-VN') + 'xu';
+                    document.getElementById('totalUsed').textContent = stats.total_used.toLocaleString('vi-VN') + 'xu';
+
+                    // Profile Info
+                    document.getElementById('displayUsername').textContent = profile.username;
+                    document.getElementById('displayEmail').textContent = profile.email;
+                    document.getElementById('displayPhone').textContent = profile.phone || 'Chưa cập nhật';
+                    document.getElementById('displayFullname').textContent = profile.fullname || 'Chưa cập nhật';
+                    document.getElementById('displayTelegram').textContent = profile.telegram_id || 'Chưa cập nhật';
+                    document.getElementById('displayDate').textContent = new Date(profile.created_at).toLocaleString('vi-VN');
+
+                    // Pre-fill Edit Form
+                    document.getElementById('editFullname').value = profile.fullname || '';
+                    document.getElementById('editPhone').value = profile.phone || '';
+                    document.getElementById('editTelegram').value = profile.telegram_id || '';
+
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showNotify('error', 'Lỗi', 'Không thể tải thông tin hồ sơ.');
+            }
+        }
+
+        function openEditModal() {
+            document.getElementById('editProfileModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editProfileModal').style.display = 'none';
+        }
+
+        async function saveProfile() {
+            const fullname = document.getElementById('editFullname').value;
+            const phone = document.getElementById('editPhone').value;
+            const telegram_id = document.getElementById('editTelegram').value;
+
+            try {
+                const response = await fetch('/api/user/update-profile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullname, phone, telegram_id })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    await showNotify('success', 'Thành công', 'Cập nhật thông tin thành công!');
+                    closeEditModal();
+                    loadProfile(); // Reload data
+                } else {
+                    showNotify('error', 'Thất bại', result.error || 'Cập nhật thất bại.');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showNotify('error', 'Lỗi mạng', 'Không thể kết nối tới máy chủ.');
+            }
+        }
+
+        async function changePassword(event) {
+            event.preventDefault();
+            const currentPass = document.getElementById('currentPass').value;
+            const newPass = document.getElementById('newPass').value;
+            const confirmPass = document.getElementById('confirmPass').value;
+
+            if (newPass !== confirmPass) {
+                showNotify('error', 'Lỗi', 'Mật khẩu mới không khớp!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/user/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        current_password: currentPass,
+                        new_password: newPass
+                    })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    await showNotify('success', 'Thành công', 'Đổi mật khẩu thành công! Vui lòng đăng nhập lại.');
+                    window.location.href = '/logout';
+                } else {
+                    showNotify('error', 'Thất bại', result.error || 'Đổi mật khẩu thất bại.');
+                }
+            } catch (error) {
+                console.error('Error changing password:', error);
+                showNotify('error', 'Lỗi mạng', 'Không thể kết nối tới máy chủ.');
+            }
+        }
+
+        // Attach event listener to password form
+        document.querySelector('.form-grid').addEventListener('submit', changePassword);
+
+        // Edit Button Handler
+        document.querySelector('.btn-edit').onclick = openEditModal;
+
+        window.onload = loadProfile;
+    </script>
+</body>
+
+</html>

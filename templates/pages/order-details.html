@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Đơn Hàng - FBStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/pages/order-details.css">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-top: 25px;
+        }
+
+        .page-link {
+            padding: 8px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            background: white;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .page-link:hover {
+            background: #f8fafc;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .page-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header (Synced with layout.html) -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Khác</span>
+                        </a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api"> API</a>
+                            <a href="/support"> Hỗ trợ</a>
+                            <a href="/blog"> Blog</a>
+                        </div>
+                    </div>
+
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Công cụ</span>
+                        </a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+
+                    <a href="/deposit" class="btn-header">
+                        <span>Nạp tiền</span>
+                    </a>
+
+                    <a href="/history" class="btn-header">
+                        <span>Lịch sử</span>
+                    </a>
+
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="/profile">Hồ sơ cá nhân</a>
+                            <a href="/history">Lịch sử đơn hàng</a>
+                            <a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div>
+                            <a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/deposit">Nạp tiền</a></li>
+                    <li><a href="/history" class="active">Lịch sử đơn hàng</a></li>
+                    <li><a href="/profile">Hồ sơ cá nhân</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="order-details-wrapper">
+            <div class="action-bar">
+                <a href="/history" class="btn-action btn-back">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn-action btn-copy"><i class="fas fa-copy"></i> Copy</button>
+                    <button class="btn-action btn-download"><i class="fas fa-cloud-download-alt"></i> Tải về đơn
+                        hàng</button>
+                    <button class="btn-action btn-delete"><i class="fas fa-trash-alt"></i> Xóa đơn hàng</button>
+                </div>
+            </div>
+
+            <span class="order-id-label" id="orderCodeDisplay">Mã đơn hàng: ...</span>
+
+            <div class="order-info-card">
+                <h1 class="product-name" id="productName">Sản phẩm: Loading...</h1>
+                <div class="order-stats">
+                    <div class="stat-badge stat-qty" id="orderQty">Số lượng mua: ...</div>
+                    <div class="stat-badge stat-payment" id="orderTotal">Thanh toán: ...</div>
+                </div>
+            </div>
+
+            <div class="details-card">
+                <div class="details-header">
+                    <i class="fas fa-info-circle"></i> Chi Tiết Đơn Hàng
+                </div>
+                <div class="details-body">
+                    <div class="filter-section">
+                        <input type="text" class="input-control" id="searchInput" placeholder="Tài khoản (UID)">
+                        <button type="button" class="btn-filter"
+                            style="background-color: var(--primary-color); color: white;"
+                            onclick="searchOrderItems()"><i class="fas fa-search"></i> Tìm kiếm</button>
+                        <button type="button" class="btn-filter" onclick="clearFilter()"><i
+                                class="fas fa-trash-alt"></i> Bỏ
+                            lọc</button>
+                    </div>
+
+                    <div
+                        style="margin-bottom: 20px; font-size: 13px; color: var(--gray-color); display: flex; align-items: center; gap: 10px;">
+                        SHOW:
+                        <select class="input-control" id="itemsPerPage" onchange="changeItemsPerPage(this.value)"
+                            style="width: auto; padding: 5px 10px; height: auto;">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px; text-align: center;"><input type="checkbox" id="selectAll"
+                                            onchange="toggleSelectAll(this)" style="width: 18px; height: 18px;"></th>
+                                    <th style="width: 80px; text-align: center;">STT</th>
+                                    <th>Tài khoản</th>
+                                    <th style="width: 120px;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderItemsBody">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="paginationContainer" class="pagination"></div>
+
+                    <div style="margin-top: 20px; color: var(--gray-color); font-size: 13px; font-weight: 600;"
+                        id="resultCount">
+                        Showing 0 of 0 Results
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- Footer (Synced with layout.html) -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dropdown Handlers (Synced with layout.html)
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
+
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (toolsDropdown && toolsDropdown.classList.contains('active') && !toolsContainer.contains(event.target)) {
+                toolsDropdown.classList.remove('active');
+            }
+            if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
+                miscDropdown.classList.remove('active');
+            }
+        }
+
+        function copyContent(btn) {
+            const textarea = btn.closest('tr').querySelector('textarea');
+            textarea.select();
+            document.execCommand('copy');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+            setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        }
+
+        // --- Order Details Logic ---
+        let currentOrder = null;
+        let orderItems = [];
+        let filteredItems = [];
+        let currentPage = 1;
+        let itemsPerPage = 10;
+
+        function getOrderCodeFromUrl() {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[pathParts.length - 1];
+        }
+
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/user/status');
+                const data = await response.json();
+
+                if (data.logged_in) {
+                    const currentUser = data.user;
+                    document.getElementById('userAvatar').textContent = currentUser.username.substring(0, 2).toUpperCase();
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Error loading user info:', error);
+            }
+        }
+
+        async function loadOrderDetails() {
+            const orderCode = getOrderCodeFromUrl();
+            document.getElementById('orderCodeDisplay').innerHTML = `Mã đơn hàng: <b style="color: var(--dark-color);">${orderCode}</b>`;
+
+            try {
+                const response = await fetch(`/api/order/${orderCode}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    currentOrder = data.order;
+                    orderItems = data.items;
+                    filteredItems = orderItems;
+                    renderOrderInfo();
+                    renderOrderItems();
+                } else {
+                    alert('Không tìm thấy đơn hàng hoặc bạn không có quyền truy cập.');
+                    window.location.href = '/history';
+                }
+            } catch (error) {
+                console.error('Error loading order details:', error);
+                alert('Lỗi kết nối server.');
+            }
+        }
+
+        function renderOrderInfo() {
+            if (!currentOrder) return;
+
+            document.getElementById('productName').textContent = `Sản phẩm: ${currentOrder.product_name}`;
+            document.getElementById('orderQty').textContent = `Số lượng mua: ${currentOrder.quantity}`;
+            document.getElementById('orderTotal').textContent = `Thanh toán: ${parseFloat(currentOrder.total_amount).toLocaleString('vi-VN')}đ`;
+        }
+
+        function renderOrderItems(itemsToRender) {
+            if (itemsToRender !== undefined) {
+                filteredItems = itemsToRender;
+                currentPage = 1; // Reset to page 1 for new filtered list
+            }
+
+            const tbody = document.getElementById('orderItemsBody');
+            tbody.innerHTML = '';
+
+            const total = filteredItems.length;
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, total);
+            const pagedList = filteredItems.slice(start, end);
+
+            document.getElementById('resultCount').textContent = `Showing ${start + 1}-${end} of ${total} Results`;
+
+            if (pagedList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Không tìm thấy kết quả</td></tr>`;
+                renderPagination(0);
+                return;
+            }
+
+            pagedList.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="text-align: center;"><input type="checkbox" class="item-checkbox" data-content="${item.account_content}" style="width: 18px; height: 18px;"></td>
+                    <td style="text-align: center;"><b style="color: var(--dark-color);">${start + index + 1}</b></td>
+                    <td>
+                        <textarea class="textarea-box" rows="2" readonly>${item.account_content}</textarea>
+                    </td>
+                    <td>
+                        <button class="copy-btn-sm" onclick="copyContent(this)"><i class="fas fa-copy"></i> Copy</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderPagination(total);
+        }
+
+        function renderPagination(totalItems) {
+            const container = document.getElementById('paginationContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            if (totalPages <= 1) return;
+
+            // Prev Button
+            const prevBtn = document.createElement('a');
+            prevBtn.className = `page-link ${currentPage === 1 ? 'disabled' : ''}`;
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.onclick = () => changePage(currentPage - 1);
+            container.appendChild(prevBtn);
+
+            // Page Numbers
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('a');
+                pageBtn.className = `page-link ${currentPage === i ? 'active' : ''}`;
+                pageBtn.innerText = i;
+                pageBtn.onclick = () => changePage(i);
+                container.appendChild(pageBtn);
+            }
+
+            // Next Button
+            const nextBtn = document.createElement('a');
+            nextBtn.className = `page-link ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.onclick = () => changePage(currentPage + 1);
+            container.appendChild(nextBtn);
+        }
+
+        function changePage(page) {
+            currentPage = page;
+            renderOrderItems();
+            window.scrollTo({ top: document.querySelector('.details-card').offsetTop - 20, behavior: 'smooth' });
+        }
+
+        function changeItemsPerPage(val) {
+            itemsPerPage = parseInt(val);
+            currentPage = 1;
+            renderOrderItems();
+        }
+
+        function toggleSelectAll(checkbox) {
+            const checkboxes = document.querySelectorAll('.item-checkbox');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+        }
+
+        // Search Filter Logic
+        function searchOrderItems() {
+            try {
+                const searchInput = document.getElementById('searchInput');
+                if (!searchInput) return;
+
+                const keyword = searchInput.value.trim().toLowerCase();
+                console.log('Searching for:', keyword);
+
+                if (!keyword) {
+                    renderOrderItems(orderItems);
+                    return;
+                }
+
+                const filtered = orderItems.filter(item => {
+                    const content = String(item.account_content || '');
+                    const parts = content.split('|');
+                    const uid = parts.length > 0 ? parts[0] : '';
+                    return uid.toLowerCase().includes(keyword);
+                });
+
+                console.log('Found results:', filtered.length);
+                renderOrderItems(filtered);
+            } catch (e) {
+                console.error('Search error:', e);
+                alert('Có lỗi xảy ra khi tìm kiếm: ' + e.message);
+            }
+        }
+
+        function clearFilter() {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = '';
+            renderOrderItems(orderItems);
+        }
+
+        // Action Buttons
+        document.querySelector('.btn-copy').onclick = function () {
+            const allContent = orderItems.map(item => item.account_content).join('\n');
+            if (!allContent) return;
+            navigator.clipboard.writeText(allContent).then(() => {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check"></i> Đã Copy';
+                setTimeout(() => { this.innerHTML = '<i class="fas fa-copy"></i> Copy'; }, 2000);
+            });
+        };
+
+        document.querySelector('.btn-download').onclick = function () {
+            if (!currentOrder) return;
+            const content = orderItems.map(item => item.account_content).join('\n');
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentOrder.order_code}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+
+        document.querySelector('.btn-delete').onclick = function () {
+            if (confirm("Bạn có chắc chắn muốn xóa đơn hàng này? (Chỉ xóa hiển thị)")) {
+                // Implement delete logic if needed, currently just redirect
+                alert("Đã xóa đơn hàng (demo)");
+                window.location.href = '/history';
+            }
+        };
+
+
+        window.onload = async function () {
+            await loadUserInfo();
+            await loadOrderDetails();
+        };
+
+    </script>
+</body>
+
+</html>

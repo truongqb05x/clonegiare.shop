@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hỗ Trợ Khách Hàng - FBStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/pages/support.css">
+
+</head>
+
+<body>
+    <!-- Header (Synced) -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <i class="fas fa-ellipsis-v"></i> <span>Khác</span>
+                        </a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api"><i class="fas fa-code"></i> API</a>
+                            <a href="/support"><i class="fas fa-headset"></i> Hỗ trợ</a>
+                            <a href="/blog"><i class="fas fa-newspaper"></i> Blog</a>
+                        </div>
+                    </div>
+
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <i class="fas fa-tools"></i> <span>Công cụ</span>
+                        </a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+
+                    <a href="/deposit" class="btn-header">
+                        <i class="fas fa-wallet"></i> <span>Nạp tiền</span>
+                    </a>
+
+                    <a href="/history" class="btn-header">
+                        <i class="fas fa-history"></i> <span>Lịch sử</span>
+                    </a>
+
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="/profile">Hồ sơ cá nhân</a>
+                            <a href="/history">Lịch sử đơn hàng</a>
+                            <a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div>
+                            <a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/deposit">Nạp tiền</a></li>
+                    <li><a href="/history">Lịch sử đơn hàng</a></li>
+                    <li><a href="/profile">Hồ sơ cá nhân</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <main class="container">
+        <div class="support-wrapper">
+            <!-- Top Contact Cards -->
+            <div class="contact-grid">
+                <!-- Address -->
+                <div class="contact-card">
+                    <div class="icon-box">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="contact-content">
+                        <h3 class="contact-title">Address</h3>
+                        <p class="contact-value">HCM</p>
+                    </div>
+                </div>
+
+                <!-- Hotline -->
+                <div class="contact-card highlight">
+                    <div class="icon-box">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-content">
+                        <h3 class="contact-title">Hotline</h3>
+                        <p class="contact-value">t.me/mijcloud_official</p>
+                    </div>
+                </div>
+
+                <!-- Support Mail -->
+                <div class="contact-card">
+                    <div class="icon-box">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-content">
+                        <h3 class="contact-title">Support Mail</h3>
+                        <p class="contact-value">hotro@mijcloud.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Links Section -->
+            <div class="links-card">
+                <ul class="links-list">
+                    <li class="link-item">
+                        <i class="fas fa-envelope-open-text" style="color: var(--teal-accent);"></i>
+                        <span>Email :</span>
+                        <a href="mailto:hotro@mijcloud.com">hotro@mijcloud.com</a>
+                    </li>
+                    <li class="link-item">
+                        <i class="fab fa-whatsapp" style="color: var(--teal-accent);"></i>
+                        <span>Gr Zalo :</span>
+                        <a href="https://zalo.me/g/zxirfr018" target="_blank">https://zalo.me/g/zxirfr018</a>
+                    </li>
+                    <li class="link-item">
+                        <i class="fab fa-telegram-plane" style="color: var(--teal-accent);"></i>
+                        <span>Gr tele :</span>
+                        <a href="https://t.me/mijcloud_official" target="_blank">https://t.me/mijcloud_official</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer (Synced) -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Dropdown Handlers
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
+
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (toolsDropdown && toolsDropdown.classList.contains('active') && !toolsContainer.contains(event.target)) {
+                toolsDropdown.classList.remove('active');
+            }
+            if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
+                miscDropdown.classList.remove('active');
+            }
+        }
+    </script>
+
+</body>
+
+</html>

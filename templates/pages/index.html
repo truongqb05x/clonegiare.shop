@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo.title }}</title>
+    <meta name="description" content="{{ seo.description }}">
+    <meta name="keywords" content="{{ seo.keywords }}">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ seo.url }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ seo.url }}">
+    <meta property="og:title" content="{{ seo.title }}">
+    <meta property="og:description" content="{{ seo.description }}">
+    <meta property="og:image" content="{{ seo.image }}">
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://fbstore.com/">
+    <meta property="twitter:title" content="FBStore - Shop Bán Acc Facebook, Via, Clone, BM Chất Lượng Số 1">
+    <meta property="twitter:description"
+        content="Hệ thống cung cấp tài khoản Facebook uy tín, chất lượng. Bảo hành 1 đổi 1, hỗ trợ 24/7.">
+    <meta property="twitter:image" content="https://fbstore.com/og-image.jpg">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "FBStore",
+      "url": "https://fbstore.com",
+      "logo": "https://fbstore.com/logo.png",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+84-xxx-xxx-xxx",
+        "contactType": "customer service"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "FBStore",
+      "url": "https://fbstore.com",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://fbstore.com/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/pages/index.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header"><i class="fas fa-ellipsis-v"></i>
+                            <span>Khác</span></a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api">API</a>
+                            <a href="/support">Hỗ trợ</a>
+                            <a href="/blog">Blog</a>
+                        </div>
+                    </div>
+                    <div class="tools-container auth-required" id="toolsContainer" style="display: none;"
+                        onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header"><i class="fas fa-tools"></i> <span>Công
+                                cụ</span></a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+                    <a href="/deposit" class="btn-header auth-required" style="display: none;"><i
+                            class="fas fa-wallet"></i> <span>Nạp tiền</span></a>
+                    <a href="/history" class="btn-header auth-required" style="display: none;"><i
+                            class="fas fa-history"></i> <span>Lịch sử</span></a>
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="handleAvatarClick(event)">?</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <!-- Initialized by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#/" class="active" onclick="navigate('#/', event)">Trang chủ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <h1 class="visually-hidden">FBStore - Hệ thống cung cấp tài khoản Facebook, Via, Clone uy tín số 1 Việt Nam</h1>
+        <div id="productList">
+            <!-- Dữ liệu sản phẩm theo danh mục sẽ được tải vào đây -->
+        </div>
+    </main>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCheckout()">×</button>
+
+            <div class="modal-left">
+                <h2 class="modal-product-title" id="modalProductTitle">Tài Khoản Tương Tác Chéo 1M XU</h2>
+                <span class="modal-badge" id="modalBadge">Bán chạy</span>
+                <div class="modal-price" id="modalPrice">11.000đ</div>
+                <p class="modal-description" id="modalDescription">xu tương tác cheo đúng để buff dịch vụ facebook,
+                    instagram, tiktok</p>
+
+                <div class="modal-share">
+                    <span>Chia sẻ:</span>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <div class="modal-right">
+                <h3 class="modal-checkout-title">Thông tin mua hàng</h3>
+
+                <div class="checkout-item">
+                    <span class="checkout-label">Số dư của tôi:</span>
+                    <span class="checkout-value" id="userBalance">0đ</span>
+                </div>
+
+                <div class="checkout-item">
+                    <span class="checkout-label">Số lượng cần mua: (*)</span>
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseQuantity()">−</button>
+                        <input type="number" class="quantity-input" id="quantityInput" value="1" min="1"
+                            oninput="manualQuantityInput(this)">
+                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+
+                <div class="checkout-item">
+                    <span class="checkout-label">Mã giảm giá:</span>
+                    <input type="text" class="promo-input" placeholder="Nhập mã giảm giá nếu có"
+                        style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+
+                <div class="checkout-item">
+                    <span class="checkout-label">Thành tiền:</span>
+                    <span class="checkout-value highlight" id="subtotal"
+                        style="color: #1877F2; font-size: 18px;">11.000đ</span>
+                </div>
+
+                <div class="total-section" style="border-top: 1px solid #f0f2f5; padding-top: 15px;">
+                    <div class="checkout-item">
+                        <span class="checkout-label">Tổng tiền thanh toán:</span>
+                        <span class="checkout-value highlight" id="total"
+                            style="color: #42B72A; font-size: 22px;">11.000đ</span>
+                    </div>
+                </div>
+
+                <button class="btn-checkout" onclick="checkout()"><i class="fas fa-check-circle"></i> THANH
+                    TOÁN</button>
+                <p style="text-align: center; margin-top: 15px; font-size: 13px; color: #65676b;">Thông tin tài khoản sẽ
+                    được gửi vào lịch sử mua hàng sau khi thanh toán.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div id="announcementModal" class="modal">
+        <div class="modal-content">
+            <div class="announcement-header">
+                <h2><i class="fas fa-bullhorn"></i> Thông báo hệ thống</h2>
+            </div>
+            <div class="announcement-body">
+                <p>Chào mừng bạn đến với hệ thống của chúng tôi! Hiện tại chúng tôi đang có chương trình khuyến mãi nạp
+                    thẻ hấp dẫn. Chúc bạn có những trải nghiệm mua sắm tuyệt vời!</p>
+                <button class="btn btn-announcement" onclick="closeAnnouncement()">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" onclick="closeImageModal()">
+        <div class="image-modal-content" onclick="event.stopPropagation()">
+            <button class="image-modal-close" onclick="closeImageModal()">&times;</button>
+            <img id="modalImage" src="" alt="Product Detail">
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Modal (Login Style) -->
+    <div class="modal-overlay" id="notifyModal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modalIcon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="modal-title" id="modalTitle">Thành công!</h3>
+            <p class="modal-message" id="modalMessage">Hành động của bạn đã được thực hiện.</p>
+            <div class="modal-loader">
+                <div class="loader-bar" id="loaderBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Purchase Modal -->
+    <div class="modal-overlay" id="successPurchaseModal">
+        <div class="modal-card" style="max-width: 600px; text-align: left;">
+            <div
+                style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #f0f2f5; padding-bottom: 15px;">
+                <div style="color: #42B72A; font-size: 24px;"><i class="fas fa-check-circle"></i></div>
+                <h3 class="modal-title" style="margin: 0; font-size: 20px;">Mua hàng thành công</h3>
+            </div>
+            <div id="purchaseDetails"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                <button class="btn-checkout" onclick="copyAllAccounts()"
+                    style="width: auto; padding: 8px 16px; font-size: 13px; background: #333; border-radius: 4px;">
+                    <i class="fas fa-copy"></i> Sao chép tất cả
+                </button>
+                <button class="btn-checkout" onclick="closePurchaseModal()"
+                    style="width: auto; padding: 8px 16px; font-size: 13px; background: #eee; color: #333; border-radius: 4px; border: 1px solid #ddd;">Xác
+                    nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Login-style Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Notification modal should be above other modals */
+        #notifyModal {
+            z-index: 2000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 32px;
+        }
+
+        .icon-success {
+            background: rgba(66, 183, 42, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .icon-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .modal-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--dark-color);
+            margin-bottom: 12px;
+        }
+
+        .modal-message {
+            color: #64748b;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .modal-loader {
+            width: 100%;
+            height: 4px;
+            background: #f1f5f9;
+            border-radius: 2px;
+            margin-top: 30px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--primary-color);
+            width: 0%;
+            transition: width 1.5s linear;
+        }
+
+        .purchase-detail-item {
+            background: #f0f2f5;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .purchase-detail-item strong {
+            color: var(--dark-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .purchase-detail-item code {
+            font-size: 13px;
+            word-break: break-all;
+            color: #1877F2;
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            display: block;
+        }
+
+        /* Hide number input spinners */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+            appearance: textfield;
+        }
+    </style>
+
+    <script>
+        let currentPrice = 0;
+        let currentProductId = null;
+        let quantity = 1;
+        let isFirstLoad = true;
+        let currentUser = null;
+
+        function showNotify(type, title, message, duration = 2000) {
+            const modal = document.getElementById('notifyModal');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const loader = document.getElementById('loaderBar');
+
+            // Reset loader
+            loader.style.transition = 'none';
+            loader.style.width = '0%';
+
+            // Set content
+            titleEl.innerText = title;
+            messageEl.innerText = message;
+
+            if (type === 'success') {
+                icon.className = 'modal-icon icon-success';
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+                loader.style.background = 'var(--secondary-color)';
+            } else {
+                icon.className = 'modal-icon icon-error';
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                loader.style.background = '#ef4444';
+            }
+
+            modal.classList.add('active');
+
+            // Start loader
+            setTimeout(() => {
+                loader.style.transition = `width ${duration}ms linear`;
+                loader.style.width = '100%';
+            }, 50);
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    resolve();
+                }, duration + 300);
+            });
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/user/status');
+                const data = await response.json();
+
+                const authElements = document.querySelectorAll('.auth-required');
+                const userAvatar = document.getElementById('userAvatar');
+                const userDropdown = document.getElementById('userDropdown');
+
+                if (data.logged_in) {
+                    currentUser = data.user;
+                    authElements.forEach(el => el.style.display = 'flex');
+                    userAvatar.innerText = currentUser.username.substring(0, 2).toUpperCase();
+                    userAvatar.style.background = 'var(--primary-color)';
+
+                    let dropdownHtml = `
+                        <a href="/profile">Hồ sơ cá nhân</a>
+                        <a href="/history">Lịch sử đơn hàng</a>
+                        <a href="/deposit">Nạp tiền</a>
+                    `;
+
+                    if (currentUser.role === 'admin') {
+                        dropdownHtml += `<a href="/admin/dashboard" style="color: var(--primary-color);">Quản trị viên</a>`;
+                    }
+
+                    dropdownHtml += `
+                        <div class="divider"></div>
+                        <a href="/logout">Đăng xuất</a>
+                    `;
+                    userDropdown.innerHTML = dropdownHtml;
+                } else {
+                    currentUser = null;
+                    authElements.forEach(el => el.style.display = 'none');
+                    userAvatar.innerHTML = '<i class="fas fa-user"></i>';
+                    userAvatar.style.background = '#65676B';
+                }
+            } catch (error) {
+                console.error('Auth Check Error:', error);
+            }
+        }
+
+        function handleAvatarClick(event) {
+            if (!currentUser) {
+                window.location.href = '/login';
+                return;
+            }
+            toggleUserMenu(event);
+        }
+
+        const getSkeletonCard = () => `
+            <div class="skeleton-card">
+                <div>
+                    <div class="skeleton" style="height: 20px; width: 70%; margin-bottom: 12px;"></div>
+                    <div class="skeleton" style="height: 14px; width: 90%; margin-bottom: 8px;"></div>
+                    <div class="skeleton" style="height: 14px; width: 40%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div class="skeleton skeleton-price"></div>
+                    <div class="skeleton skeleton-button"></div>
+                </div>
+            </div>
+        `;
+
+        const getSkeletonSection = () => `
+            <div style="margin-bottom: 40px; width: 100%;">
+                <div class="skeleton skeleton-title" style="width: 200px; height: 30px; margin-bottom: 20px;"></div>
+                <div class="products">
+                    ${getSkeletonCard()}
+                    ${getSkeletonCard()}
+                    ${getSkeletonCard()}
+                </div>
+            </div>
+        `;
+
+        async function fetchCategories() {
+            const response = await fetch('/api/categories');
+            return await response.json();
+        }
+
+        async function fetchProducts() {
+            const response = await fetch('/api/products');
+            return await response.json();
+        }
+
+        async function renderNavMenu() {
+            try {
+                const categories = await fetchCategories();
+                const navMenu = document.getElementById('navMenu');
+                const currentPath = window.location.pathname;
+
+                // Keep the "Trang chủ" link
+                navMenu.innerHTML = `<li><a href="/" class="${currentPath === '/' ? 'active' : ''}" onclick="navigate('/', event)">Trang chủ</a></li>`;
+
+                categories.forEach(cat => {
+                    const li = document.createElement('li');
+                    const path = `/category/${cat.slug}`;
+                    li.innerHTML = `<a href="${path}" class="${currentPath === path ? 'active' : ''}" onclick="navigate('${path}', event)">${cat.name}</a>`;
+                    navMenu.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Nav Menu Error:', error);
+            }
+        }
+
+        async function renderProducts(path = '/') {
+            const container = document.getElementById('productList');
+
+            container.innerHTML = getSkeletonSection() + getSkeletonSection();
+
+            try {
+                const categories = await fetchCategories();
+                const products = await fetchProducts();
+
+                container.innerHTML = '';
+
+                // Group products by category
+                const grouped = {};
+                categories.forEach(cat => {
+                    grouped[cat.id] = {
+                        name: cat.name,
+                        products: products.filter(p => p.category_id === cat.id)
+                    };
+                });
+
+                // Filter by path if not home
+                let categoriesToRender = categories;
+                if (path !== '/' && path.startsWith('/category/')) {
+                    const targetSlug = path.replace('/category/', '');
+                    categoriesToRender = categories.filter(c => c.slug === targetSlug);
+                }
+
+                if (categoriesToRender.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; width: 100%; padding: 40px; color: var(--gray-color);">Không tìm thấy sản phẩm trong danh mục này.</p>';
+                    return;
+                }
+
+                categoriesToRender.forEach(cat => {
+                    const catProducts = grouped[cat.id]?.products || [];
+                    if (catProducts.length === 0 && path === '#/') return;
+
+                    const sectionHtml = `
+                        <section class="category-section" style="margin-bottom: 40px; width: 100%;">
+                            <h2 class="section-title" style="margin-bottom: 20px;">
+                                <i class="fas fa-chevron-right"></i> ${cat.name}
+                            </h2>
+                            <div class="products">
+                                ${catProducts.map(p => `
+                                    <article class="product-card">
+                                        <div class="product-info">
+                                            <div>
+                                                <h3>${p.name}</h3>
+                                                <p class="product-description">${p.description}</p>
+                                                <div class="product-meta">Kho hàng: ${p.stock}</div>
+                                            </div>
+                                            <div class="product-actions">
+                                                <div class="product-price">${parseFloat(p.price).toLocaleString('vi-VN')}đ</div>
+                                                <div class="product-btn-group">
+                                                    <button class="btn btn-buy" onclick="openCheckoutFromData(${p.id}, '${p.name}', '${parseFloat(p.price).toLocaleString('vi-VN')}đ', '${p.description}')"><i class="fas fa-shopping-cart"></i> MUA</button>
+                                                    <button class="btn btn-detail" onclick="openImageModal('${p.image_url}', '${p.name}')">Chi tiết</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </article>
+                                `).join('')}
+                            </div>
+                        </section>
+                    `;
+                    container.innerHTML += sectionHtml;
+                });
+
+                if (isFirstLoad) {
+                    showInitialAnnouncement();
+                    isFirstLoad = false;
+                }
+
+            } catch (error) {
+                console.error('Render Error:', error);
+                container.innerHTML = '<p>Lỗi khi tải dữ liệu. Vui lòng thử lại sau.</p>';
+            }
+        }
+
+        function showInitialAnnouncement() {
+            document.getElementById('announcementModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function navigate(path, event) {
+            if (event) event.preventDefault();
+
+            // Update URL using History API
+            window.history.pushState({}, '', path);
+
+            // Update Active State
+            const links = document.querySelectorAll('.nav-menu a');
+            links.forEach(link => {
+                const linkPath = link.getAttribute('href');
+                if (linkPath === path) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // Render Products
+            renderProducts(path);
+        }
+
+        window.onpopstate = function () {
+            const path = window.location.pathname;
+            // Update Active State on PopState
+            const links = document.querySelectorAll('.nav-menu a');
+            links.forEach(link => {
+                if (link.getAttribute('href') === path) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            renderProducts(path);
+        };
+
+        function openImageModal(imageUrl, title) {
+            const modal = document.getElementById('imageModal');
+            const img = document.getElementById('modalImage');
+            img.src = imageUrl;
+            img.alt = title || 'Thông tin tài khoản Facebook';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openCheckoutFromData(productId, title, price, description) {
+            if (!currentUser) {
+                window.location.href = '/login';
+                return;
+            }
+            // Store product ID
+            currentProductId = productId;
+            // Extract price number
+            currentPrice = parseInt(price.replace(/[^0-9]/g, ''));
+            quantity = 1;
+
+            document.getElementById('modalProductTitle').textContent = title;
+            document.getElementById('modalPrice').textContent = price;
+            document.getElementById('modalDescription').textContent = description;
+
+            // Update user balance display
+            if (currentUser && currentUser.balance !== undefined) {
+                document.getElementById('userBalance').textContent = parseFloat(currentUser.balance).toLocaleString('vi-VN') + 'đ';
+            }
+
+            // Hide badge in modal
+            const modalBadge = document.getElementById('modalBadge');
+            if (modalBadge) {
+                modalBadge.style.display = 'none';
+            }
+            document.getElementById('quantityInput').value = quantity;
+
+            updateTotal();
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+
+        function openCheckout(element) {
+            if (!currentUser) {
+                window.location.href = '/login';
+                return;
+            }
+            const card = element.closest('.product-card');
+            if (!card) return;
+
+            const title = card.querySelector('h3').textContent;
+            const price = card.querySelector('.product-price').textContent;
+            const description = card.querySelector('.product-description').textContent;
+
+            // Extract price number
+            currentPrice = parseInt(price.replace(/[^0-9]/g, ''));
+            quantity = 1;
+
+            document.getElementById('modalProductTitle').textContent = title;
+            document.getElementById('modalPrice').textContent = price;
+            document.getElementById('modalDescription').textContent = description;
+
+            // Hide badge in modal if not present on card
+            const modalBadge = document.getElementById('modalBadge');
+            if (modalBadge) {
+                modalBadge.style.display = 'none';
+            }
+            document.getElementById('quantityInput').value = quantity;
+
+            updateTotal();
+            document.getElementById('checkoutModal').classList.add('active');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.remove('active');
+        }
+
+        function increaseQuantity() {
+            quantity++;
+            document.getElementById('quantityInput').value = quantity;
+            updateTotal();
+        }
+
+        function decreaseQuantity() {
+            if (quantity > 1) {
+                quantity--;
+                document.getElementById('quantityInput').value = quantity;
+                updateTotal();
+            }
+        }
+
+        function updateTotal() {
+            const subtotal = currentPrice * quantity;
+            document.getElementById('subtotal').textContent = subtotal.toLocaleString('vi-VN') + 'đ';
+            document.getElementById('total').textContent = subtotal.toLocaleString('vi-VN') + 'đ';
+        }
+
+        function manualQuantityInput(input) {
+            let val = parseInt(input.value);
+            if (isNaN(val) || val < 1) {
+                quantity = 1;
+            } else {
+                quantity = val;
+            }
+            updateTotal();
+        }
+
+        let lastOrderCode = null;
+
+        async function checkout() {
+            if (!currentProductId) {
+                showNotify('error', 'Lỗi', 'Không tìm thấy thông tin sản phẩm');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: currentProductId,
+                        quantity: quantity
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Update user balance
+                    if (currentUser) {
+                        currentUser.balance = data.new_balance;
+                    }
+
+                    // Store accounts for copying and order code for redirect
+                    purchasedAccounts = data.accounts;
+                    lastOrderCode = data.order_code;
+
+                    // Format accounts as simple list without titles
+                    const accountsHtml = data.accounts.map(acc =>
+                        `<div class="purchase-detail-item">
+                            <code>${acc}</code>
+                        </div>`
+                    ).join('');
+
+                    const detailsHtml = `
+                        <div style="background: #fdfdfd; border: 1px dashed #ddd; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                                <span style="color: #666;">Mã đơn hàng:</span>
+                                <span style="font-weight: 600;">${data.order_code}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px;">
+                                <span style="color: #666;">Số tiền:</span>
+                                <span style="color: #d32f2f; font-weight: 700;">-${data.total_amount.toLocaleString('vi-VN')}đ</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                                <span style="color: #666;">Số dư hiện tại:</span>
+                                <span style="font-weight: 600;">${data.new_balance.toLocaleString('vi-VN')}đ</span>
+                            </div>
+                        </div>
+                        <div>
+                            <p style="font-weight: 600; color: #333; margin-bottom: 10px; font-size: 15px;">Dữ liệu tài khoản (${data.accounts.length}):</p>
+                            <textarea readonly style="width: 100%; height: 160px; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: monospace; font-size: 13px; background: #fff; line-height: 1.6; resize: none; outline: none;">${data.accounts.join('\n')}</textarea>
+                            <p style="margin-top: 10px; font-size: 12px; color: #777; font-style: italic;">
+                                Tip: Bạn có thể copy nhanh bằng nút bên dưới hoặc bôi đen trong ô trên.
+                            </p>
+                        </div>
+                    `;
+
+                    document.getElementById('purchaseDetails').innerHTML = detailsHtml;
+                    document.getElementById('successPurchaseModal').classList.add('active');
+                    closeCheckout();
+                } else {
+                    showNotify('error', 'Không thể mua hàng', data.error || 'Vui lòng thử lại sau');
+                }
+            } catch (error) {
+                console.error('Purchase error:', error);
+                showNotify('error', 'Lỗi kết nối', 'Không thể kết nối với máy chủ. Vui lòng kiểm tra kết nối và thử lại.');
+            }
+        }
+
+        function copyAllAccounts() {
+            if (purchasedAccounts.length === 0) {
+                showNotify('error', 'Lỗi', 'Không có tài khoản để sao chép');
+                return;
+            }
+
+            const allAccountsText = purchasedAccounts.join('\n');
+
+            navigator.clipboard.writeText(allAccountsText).then(() => {
+                showNotify('success', 'Đã sao chép!', `Đã sao chép ${purchasedAccounts.length} tài khoản vào clipboard`, 1500);
+            }).catch(err => {
+                console.error('Copy failed:', err);
+                showNotify('error', 'Lỗi', 'Không thể sao chép. Vui lòng sao chép thủ công.');
+            });
+        }
+
+        function closePurchaseModal() {
+            if (lastOrderCode) {
+                window.location.href = `/order/${lastOrderCode}`;
+            } else {
+                const modal = document.getElementById('successPurchaseModal');
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                // Refresh products to update stock
+                const path = window.location.pathname;
+                renderProducts(path);
+            }
+        }
+
+        function closeAnnouncement() {
+            document.getElementById('announcementModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onload = async function () {
+            await checkAuth();
+            await renderNavMenu();
+            const path = window.location.pathname;
+            renderProducts(path);
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const checkoutModal = document.getElementById('checkoutModal');
+            const announcementModal = document.getElementById('announcementModal');
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
+
+            if (event.target == checkoutModal) {
+                closeCheckout();
+            }
+            if (event.target == announcementModal) {
+                closeAnnouncement();
+            }
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (toolsDropdown && toolsDropdown.classList.contains('active') && !toolsContainer.contains(event.target)) {
+                toolsDropdown.classList.remove('active');
+            }
+            if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
+                miscDropdown.classList.remove('active');
+            }
+        }
+
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            // Close other menus if open
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            // Close other menus if open
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            // Close other menus if open
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>

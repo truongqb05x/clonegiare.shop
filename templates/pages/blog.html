@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Tin Tức - FBStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/pages/blog.css">
+
+</head>
+
+<body>
+    <!-- Header (Synced) -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <i class="fas fa-ellipsis-v"></i> <span>Khác</span>
+                        </a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api"><i class="fas fa-code"></i> API</a>
+                            <a href="/support"><i class="fas fa-headset"></i> Hỗ trợ</a>
+                            <a href="/blog"><i class="fas fa-newspaper"></i> Blog</a>
+                        </div>
+                    </div>
+
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <i class="fas fa-tools"></i> <span>Công cụ</span>
+                        </a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+
+                    <a href="/deposit" class="btn-header">
+                        <i class="fas fa-wallet"></i> <span>Nạp tiền</span>
+                    </a>
+
+                    <a href="/history" class="btn-header">
+                        <i class="fas fa-history"></i> <span>Lịch sử</span>
+                    </a>
+
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="/profile">Hồ sơ cá nhân</a>
+                            <a href="/history">Lịch sử đơn hàng</a>
+                            <a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div>
+                            <a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/deposit">Nạp tiền</a></li>
+                    <li><a href="/history">Lịch sử đơn hàng</a></li>
+                    <li><a href="/profile">Hồ sơ cá nhân</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <main class="container">
+        <div class="blog-wrapper">
+            <!-- Main Content Area -->
+            <div class="blog-content">
+                <div class="blog-controls">
+                    <div class="control-item">
+                        <span>SHOW:</span>
+                        <select class="select-control">
+                            <option>10</option>
+                            <option>20</option>
+                            <option>50</option>
+                        </select>
+                    </div>
+                    <div class="control-item">
+                        <span>SHORT BY:</span>
+                        <select class="select-control">
+                            <option>Mặc định</option>
+                            <option>Mới nhất</option>
+                            <option>Xem nhiều nhất</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="blog-grid">
+                    <!-- Blog Card 1 -->
+                    <article class="blog-card">
+                        <img src="https://img.freepik.com/free-vector/modern-check-mark-symbol-concept-background_1017-32001.jpg"
+                            alt="Hướng dẫn lấy lại mật khẩu" class="blog-image">
+                        <div class="blog-body">
+                            <div class="blog-meta">
+                                <div class="meta-item"><i class="fas fa-user"></i> Admin</div>
+                                <div class="meta-item"><i class="fas fa-calendar-alt"></i> 2025-12-08 21:37:52</div>
+                            </div>
+                            <h2 class="blog-title">Hướng dẫn lấy lại mật khẩu tài khoản tại Mijcloud.com</h2>
+                            <p class="blog-excerpt">Bước 1 : Truy cập vào phần login Bước 2: Nhấn quên mật khẩu Bước 3:
+                                Nhập email đã đăng ký tài khoản để hệ thống gửi mã xác nhận về email của bạn...</p>
+                            <a href="#" class="btn-readmore">Xem thêm <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="results-info">
+                    Showing 10 of 1 Results
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Search Widget -->
+                <div class="widget">
+                    <h3 class="widget-title">Tìm kiếm bài viết</h3>
+                    <div class="search-box">
+                        <button class="btn-search-widget"><i class="fas fa-search"></i></button>
+                        <input type="text" class="search-input" placeholder="Search blogs">
+                    </div>
+                </div>
+
+                <!-- Popular Posts -->
+                <div class="widget">
+                    <h3 class="widget-title">Bài viết phổ biến</h3>
+                    <div class="popular-list">
+                        <a href="#" class="popular-item">
+                            <img src="https://img.freepik.com/free-vector/modern-check-mark-symbol-concept-background_1017-32001.jpg"
+                                alt="Thumb" class="popular-thumb">
+                            <div class="popular-content">
+                                <h4 class="popular-title">Hướng dẫn lấy lại mật khẩu tài khoản tại Mijcloud.com</h4>
+                                <span class="popular-cat">HƯỚNG DẪN</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="widget">
+                    <h3 class="widget-title">Chuyên mục</h3>
+                    <ul class="category-list">
+                        <li class="category-item">
+                            <a href="#">Hướng Dẫn</a>
+                            <span class="category-count">1</span>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer (Synced) -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script>
+        // Dropdown Handlers
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            const toolsDropdown = document.getElementById('toolsDropdown');
+            const toolsContainer = document.getElementById('toolsContainer');
+            const miscDropdown = document.getElementById('miscDropdown');
+            const miscContainer = document.getElementById('miscContainer');
+
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+            if (toolsDropdown && toolsDropdown.classList.contains('active') && !toolsContainer.contains(event.target)) {
+                toolsDropdown.classList.remove('active');
+            }
+            if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
+                miscDropdown.classList.remove('active');
+            }
+        }
+
+    </script>
+</body>
+
+</html>

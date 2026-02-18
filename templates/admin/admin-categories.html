@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Chuyên mục - FBStore Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Reusing styles from dashboard/layout for consistency -->
+    <style>
+        :root {
+            --primary-color: #1877F2;
+            --secondary-color: #42B72A;
+            --dark-sidebar: #1C1E21;
+            --light-bg: #F0F2F5;
+            --text-color: #050505;
+            --gray-color: #65676B;
+            --border-color: #DADDE1;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--dark-sidebar);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .admin-logo span {
+            color: white;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .menu-label {
+            padding: 10px 25px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #8A8D91;
+            letter-spacing: 1px;
+        }
+
+        .menu-item-wrapper {
+            margin-bottom: 2px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #B0B3B8;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            gap: 12px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--primary-color);
+        }
+
+        .has-submenu {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chevron {
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item-wrapper.active .chevron {
+            transform: rotate(90deg);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px 0;
+        }
+
+        .menu-item-wrapper.active .submenu {
+            display: block;
+        }
+
+        .submenu-item {
+            display: block;
+            padding: 10px 45px;
+            color: #8A8D91;
+            font-size: 13px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .submenu-item:hover,
+        .submenu-item.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .submenu-item.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            height: 60px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toggle-btn {
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--gray-color);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dashboard-container {
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-sidebar);
+        }
+
+        /* Table Card */
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 15px 12px;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--gray-color);
+            font-weight: 700;
+            background: #F8F9FA;
+        }
+
+        .admin-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .badge-success {
+            background: rgba(66, 183, 42, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .badge-danger {
+            background: rgba(250, 62, 62, 0.1);
+            color: #FA3E3E;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+            background: #F0F2F5;
+            color: var(--gray-color);
+        }
+
+        .btn-icon:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-icon.edit:hover {
+            background: var(--primary-color);
+        }
+
+        .btn-icon.delete:hover {
+            background: #FA3E3E;
+        }
+
+        /* Modal placeholder */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-card {
+            background: white;
+            width: 500px;
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar (Shared Structure) -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="admin-logo">FB<span>Store</span></div>
+        </div>
+        <div class="sidebar-menu">
+            <p class="menu-label">Chính</p>
+            <div class="menu-item-wrapper" id="dashboardMenu">
+                <a href="{{ url_for('admin.dashboard') }}"
+                    class="menu-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+
+            <p class="menu-label">Dịch vụ</p>
+            <div class="menu-item-wrapper {% if active_page in ['categories', 'products', 'orders', 'inventory'] %}active{% endif %}"
+                id="productMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('productMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-shopping-cart"></i> Sản phẩm
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page in ['categories', 'products' , 'orders' , 'inventory' ]
+                    %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.categories') }}"
+                            class="submenu-item {% if active_page == 'categories' %}active{% endif %}">Chuyên mục</a>
+                    </li>
+                    <li><a href="{{ url_for('admin.products') }}"
+                            class="submenu-item {% if active_page == 'products' %}active{% endif %}">Tất cả sản phẩm</a>
+                    </li>
+                    <li><a href="#" class="submenu-item">Kết nối API</a></li>
+                    <li><a href="{{ url_for('admin.orders') }}"
+                            class="submenu-item {% if active_page == 'orders' %}active{% endif %}">Đơn hàng</a></li>
+                    <li><a href="#" class="submenu-item">Tài khoản đã bán</a></li>
+                    <li><a href="{{ url_for('admin.inventory') }}"
+                            class="submenu-item {% if active_page == 'inventory' %}active{% endif %}">Tài khoản trong
+                            kho</a></li>
+                </ul>
+            </div>
+
+            <p class="menu-label">Tài chính</p>
+            <div class="menu-item-wrapper {% if active_page in ['banks', 'deposits'] %}active{% endif %}"
+                id="depositMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('depositMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-wallet"></i> Nạp tiền
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page in ['banks', 'deposits' ] %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.banks') }}"
+                            class="submenu-item {% if active_page == 'banks' %}active{% endif %}">Ngân hàng</a></li>
+                    <li><a href="{{ url_for('admin.deposits') }}"
+                            class="submenu-item {% if active_page == 'deposits' %}active{% endif %}">Lịch sử nạp</a>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="menu-label">Quản lý</p>
+            <div class="menu-item-wrapper {% if active_page == 'novery' %}active{% endif %}" id="accountMgmtMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('accountMgmtMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-user-shield"></i> Quản lý tài khoản
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page=='novery' %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.novery') }}"
+                            class="submenu-item {% if active_page == 'novery' %}active{% endif %}">Tài Khoản Novery</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-item-wrapper {% if active_page == 'users' %}active{% endif %}" id="memberMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('memberMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-users"></i> Thành viên
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page=='users' %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.users') }}"
+                            class="submenu-item {% if active_page == 'users' %}active{% endif %}">Quản lý thành viên</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-item-wrapper" id="settingMenu">
+                <div class="menu-item">
+                    <i class="fas fa-cog"></i> Cài đặt hệ thống
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <i class="fas fa-bars toggle-btn"></i>
+                <h4 style="font-weight: 600; font-size: 15px;">Quản lý Chuyên mục</h4>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-profile">
+                    <div class="admin-avatar">AD</div>
+                    <span style="font-size: 13px; font-weight: 600; color: var(--gray-color);">Administrator</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <div class="page-header">
+                <h1 class="page-title">Danh sách Chuyên mục</h1>
+                <button class="btn btn-primary" onclick="openModal()"><i class="fas fa-plus"></i> Thêm mới</button>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Icon</th>
+                                <th>Tên chuyên mục</th>
+                                <th>Mô tả</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTableBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Mockup -->
+    <div class="modal-overlay" id="categoryModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modalTitle" style="font-size: 18px;">Thêm Chuyên mục Mới</h2>
+                <i class="fas fa-times" style="cursor: pointer;" onclick="closeModal()"></i>
+            </div>
+            <form id="categoryForm">
+                <input type="hidden" id="categoryId">
+                <div class="form-group">
+                    <label>Tên chuyên mục</label>
+                    <input type="text" id="catName" class="form-control" placeholder="VD: Via Facebook" required>
+                </div>
+                <div class="form-group">
+                    <label>Icon (FontAwesome)</label>
+                    <input type="text" id="catIcon" class="form-control" placeholder="fab fa-facebook" required>
+                </div>
+                <div class="form-group">
+                    <label>Mô tả</label>
+                    <textarea id="catDescription" class="form-control" rows="3"
+                        placeholder="Nhập mô tả ngắn..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="catStatus" class="form-control">
+                        <option value="active">Hiển thị</option>
+                        <option value="hidden">Ẩn</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn btn-icon" style="width: auto; padding: 0 20px;"
+                        onclick="closeModal()">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu lại</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSubmenu(id) {
+            const wrapper = document.getElementById(id);
+            wrapper.classList.toggle('active');
+        }
+
+        document.querySelector('.toggle-btn').addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.width = (sidebar.style.width === '0px' || sidebar.style.width === '') ? '260px' : '0px';
+        });
+
+        let categories = [];
+
+        async function fetchCategories() {
+            try {
+                const response = await fetch('/admin/api/categories');
+                const data = await response.json();
+                if (data.success) {
+                    categories = data.categories;
+                    renderCategories();
+                }
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+            }
+        }
+
+        function renderCategories() {
+            const tbody = document.getElementById('categoriesTableBody');
+            tbody.innerHTML = '';
+            categories.forEach(cat => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${cat.id}</td>
+                        <td><i class="${cat.icon}" style="font-size: 20px; color: var(--primary-color);"></i></td>
+                        <td style="font-weight: 600;">${cat.name}</td>
+                        <td style="font-size: 13px; color: var(--gray-color);">${cat.description || ''}</td>
+                        <td>
+                            <span class="badge ${cat.status === 'active' ? 'badge-success' : 'badge-danger'}">
+                                ${cat.status === 'active' ? 'Đang hiện' : 'Đang ẩn'}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 5px;">
+                                <button class="btn btn-icon edit" onclick="openModal(${cat.id})"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-icon delete" onclick="deleteCategory(${cat.id})"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openModal(id = null) {
+            const modal = document.getElementById('categoryModal');
+            const form = document.getElementById('categoryForm');
+            const title = document.getElementById('modalTitle');
+
+            form.reset();
+            document.getElementById('categoryId').value = '';
+
+            if (id) {
+                const cat = categories.find(c => c.id === id);
+                title.innerText = 'Chỉnh sửa Chuyên mục';
+                document.getElementById('categoryId').value = cat.id;
+                document.getElementById('catName').value = cat.name;
+                document.getElementById('catIcon').value = cat.icon;
+                document.getElementById('catDescription').value = cat.description;
+                document.getElementById('catStatus').value = cat.status;
+            } else {
+                title.innerText = 'Thêm Chuyên mục Mới';
+            }
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('categoryModal').style.display = 'none';
+        }
+
+        document.getElementById('categoryForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('categoryId').value;
+            const data = {
+                id: id,
+                name: document.getElementById('catName').value,
+                icon: document.getElementById('catIcon').value,
+                description: document.getElementById('catDescription').value,
+                status: document.getElementById('catStatus').value
+            };
+
+            const url = id ? '/admin/api/categories/update' : '/admin/api/categories/add';
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    closeModal();
+                    fetchCategories();
+                }
+            } catch (error) {
+                alert('Có lỗi xảy ra!');
+            }
+        };
+
+        async function deleteCategory(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa chuyên mục này?')) {
+                try {
+                    const response = await fetch(`/admin/api/categories/delete/${id}`, { method: 'POST' });
+                    const result = await response.json();
+                    if (result.success) {
+                        fetchCategories();
+                    } else {
+                        alert('Lỗi: ' + (result.error || 'Nỗ lực xóa thất bại'));
+                    }
+                } catch (error) {
+                    alert('Lỗi kết nối server!');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchCategories);
+    </script>
+</body>
+
+</html>

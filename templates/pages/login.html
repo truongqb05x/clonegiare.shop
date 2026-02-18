@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | FBStore - The Most Trusted Social Trading Platform</title>
+    <!-- Modern Typography -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="/static/css/pages/login.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="auth-wrapper">
+        <!-- Brand Side -->
+        <div class="auth-brand">
+            <div class="brand-logo">
+                <kbd>FB</kbd> <span>Store</span>
+            </div>
+
+            <div class="brand-content">
+                <h1>Hệ Thống Giao Dịch Tài Khoản Uy Tín Số 1 Việt Nam.</h1>
+                <p>Nền tảng cung cấp giải pháp tài khoản Facebook, Ads & Automation chuyên nghiệp cho Marketers.</p>
+
+                <div class="benefit-list">
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="benefit-text">
+                            <h4>Bảo Hành 1 Đổi 1</h4>
+                            <p>Chính sách bảo hành rõ ràng, hỗ trợ nhanh chóng trong 24h.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="benefit-text">
+                            <h4>Giao Hàng Tức Thì</h4>
+                            <p>Hệ thống tự động hóa hoàn toàn, nhận tài khoản ngay sau khi thanh toán.</p>
+                        </div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon"><i class="fas fa-headset"></i></div>
+                        <div class="benefit-text">
+                            <h4>Hỗ Trợ Chuyên Sâu</h4>
+                            <p>Đội ngũ kỹ thuật hỗ trợ cài đặt và giải quyết vấn đề checkpoints chuyên sâu.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="brand-footer">
+                &copy; 2023 FBStore Platform. Managed by CMSNT Technical Team.
+            </div>
+        </div>
+
+        <!-- Form Side -->
+        <div class="auth-form-area">
+            <div class="form-container">
+                <!-- Login Form -->
+                <div id="login-form" class="auth-form active">
+                    <div class="form-header">
+                        <h2>Chào mừng trở lại</h2>
+                        <p>Hãy nhập thông tin đăng nhập của bạn bên dưới.</p>
+                    </div>
+
+                    <form>
+                        <div class="input-group">
+                            <label class="input-label">Email / Tên đăng nhập</label>
+                            <input type="text" class="input-control" placeholder="example@gmail.com" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Mật khẩu</label>
+                            <input type="password" class="input-control" placeholder="••••••••" required>
+                        </div>
+
+                        <div class="auth-actions">
+                            <label class="remember-me">
+                                <input type="checkbox"> Ghi nhớ đăng nhập
+                            </label>
+                            <a onclick="showForm('forgot-form')" class="link-text">Quên mật khẩu?</a>
+                        </div>
+
+                        <button type="submit" class="btn-submit">ĐĂNG NHẬP HỆ THỐNG</button>
+
+                        <div class="social-auth">
+                            <div class="social-title">Hoặc đăng nhập với</div>
+                            <div class="social-btns">
+                                <button type="button" class="social-btn">
+                                    <i class="fab fa-facebook-f"></i> Facebook
+                                </button>
+                                <button type="button" class="social-btn">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                                        alt="Google Logo"> Google
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="footer-cta">
+                            Chưa có tài khoản? <a onclick="showForm('register-form')" class="link-text">Đăng ký tài
+                                khoản mới</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="auth-form">
+                    <div class="form-header">
+                        <h2>Đăng ký tài khoản</h2>
+                        <p>Bắt đầu trải nghiệm các giải pháp tài khoản chuyên nghiệp.</p>
+                    </div>
+
+                    <form>
+                        <div class="input-group">
+                            <label class="input-label">Họ và Tên</label>
+                            <input type="text" class="input-control" placeholder="Nguyễn Văn A" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Email</label>
+                            <input type="email" class="input-control" placeholder="name@example.com" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Mật khẩu</label>
+                            <input type="password" class="input-control" placeholder="Tối thiểu 8 ký tự" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Xác nhận mật khẩu</label>
+                            <input type="password" class="input-control" placeholder="Nhập lại mật khẩu" required>
+                        </div>
+
+                        <button type="submit" class="btn-submit">ĐĂNG KÝ NGAY</button>
+
+                        <div class="footer-cta">
+                            Đã có tài khoản? <a onclick="showForm('login-form')" class="link-text">Quay lại Đăng
+                                nhập</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Forgot Password Form -->
+                <div id="forgot-form" class="auth-form">
+                    <div class="form-header">
+                        <h2>Quên mật khẩu?</h2>
+                        <p>Nhập email của bạn để nhận hướng dẫn khôi phục mật khẩu.</p>
+                    </div>
+
+                    <form>
+                        <div class="input-group">
+                            <label class="input-label">Email đã đăng ký</label>
+                            <input type="email" class="input-control" placeholder="name@example.com" required>
+                        </div>
+
+                        <button type="submit" class="btn-submit">GỬI YÊU CẦU KHÔI PHỤC</button>
+
+                        <div class="footer-cta">
+                            Nhớ ra mật khẩu? <a onclick="showForm('login-form')" class="link-text">Quay lại Đăng
+                                nhập</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div class="modal-overlay" id="notifyModal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modalIcon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="modal-title" id="modalTitle">Thành công!</h3>
+            <p class="modal-message" id="modalMessage">Hành động của bạn đã được thực hiện.</p>
+            <div class="modal-loader">
+                <div class="loader-bar" id="loaderBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showForm(formId) {
+            const forms = document.querySelectorAll('.auth-form');
+            forms.forEach(form => form.classList.remove('active'));
+
+            const targetForm = document.getElementById(formId);
+            if (targetForm) {
+                targetForm.classList.add('active');
+            }
+        }
+
+        function showNotify(type, title, message, duration = 1500) {
+            const modal = document.getElementById('notifyModal');
+            const icon = document.getElementById('modalIcon');
+            const titleEl = document.getElementById('modalTitle');
+            const messageEl = document.getElementById('modalMessage');
+            const loader = document.getElementById('loaderBar');
+
+            // Reset loader
+            loader.style.transition = 'none';
+            loader.style.width = '0%';
+
+            // Set content
+            titleEl.innerText = title;
+            messageEl.innerText = message;
+
+            if (type === 'success') {
+                icon.className = 'modal-icon icon-success';
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+                loader.style.background = 'var(--secondary-color)';
+            } else {
+                icon.className = 'modal-icon icon-error';
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                loader.style.background = '#ef4444';
+            }
+
+            modal.classList.add('active');
+
+            // Start loader
+            setTimeout(() => {
+                loader.style.transition = `width ${duration}ms linear`;
+                loader.style.width = '100%';
+            }, 50);
+
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    resolve();
+                }, duration + 300);
+            });
+        }
+
+        // Handle Login Submission
+        document.querySelector('#login-form form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = e.target.querySelector('input[type="text"]').value;
+            const password = e.target.querySelector('input[type="password"]').value;
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    await showNotify('success', 'Đăng nhập thành công', 'Đang chuyển hướng đến trang chủ...');
+                    window.location.href = result.redirect;
+                } else {
+                    showNotify('error', 'Đăng nhập thất bại', result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotify('error', 'Lỗi hệ thống', 'Có lỗi xảy ra, vui lòng thử lại sau.');
+            }
+        });
+
+        // Handle Register Submission
+        document.querySelector('#register-form form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullname = e.target.querySelectorAll('input')[0].value;
+            const email = e.target.querySelectorAll('input')[1].value;
+            const password = e.target.querySelectorAll('input')[2].value;
+            const confirm_password = e.target.querySelectorAll('input')[3].value;
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fullname, email, password, confirm_password })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    await showNotify('success', 'Đăng ký thành công', result.message, 2000);
+                    showForm('login-form');
+                } else {
+                    showNotify('error', 'Đăng ký thất bại', result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotify('error', 'Lỗi hệ thống', 'Có lỗi xảy ra, vui lòng thử lại sau.');
+            }
+        });
+    </script>
+</body>
+
+</html>

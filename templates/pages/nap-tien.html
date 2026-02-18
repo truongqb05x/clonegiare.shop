@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nạp Tiền - FBStore</title>
+
+    <!-- Meta SEO Cơ Bản -->
+    <meta name="description"
+        content="Hệ thống cung cấp tài khoản Facebook, Via cổ, Clone, Fanpage, BM quảng cáo uy tín, chất lượng. Bảo hành 1 đổi 1, hỗ trợ 24/7.">
+    <meta name="keywords" content="mua via facebook, mua clone facebook, mua bm, shop acc fb, tai khoan quang cao">
+    <meta name="robots" content="index, follow">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/layout.css">
+    <link rel="stylesheet" href="/static/css/pages/nap-tien.css">
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <a href="/" class="logo">
+                    <i class="fab fa-facebook-square"></i>
+                    <span>FB</span>Store
+                </a>
+
+                <div class="header-actions">
+                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Khác</span>
+                        </a>
+                        <div class="misc-dropdown" id="miscDropdown">
+                            <a href="/api"> API</a>
+                            <a href="/support"> Hỗ trợ</a>
+                            <a href="/blog"> Blog</a>
+                        </div>
+                    </div>
+
+                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
+                        <a href="javascript:void(0)" class="btn-header">
+                            <span>Công cụ</span>
+                        </a>
+                        <div class="tools-dropdown" id="toolsDropdown">
+                            <a href="#/check-live">Check Live UID</a>
+                            <a href="#/random-face">Random Face</a>
+                        </div>
+                    </div>
+
+                    <a href="/deposit" class="btn-header">
+                        <span>Nạp tiền</span>
+                    </a>
+
+                    <a href="/history" class="btn-header">
+                        <span>Lịch sử</span>
+                    </a>
+
+                    <div class="user-profile-container">
+                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="/profile">Hồ sơ cá nhân</a>
+                            <a href="/history">Lịch sử đơn hàng</a>
+                            <a href="/deposit">Nạp tiền</a>
+                            <div class="divider"></div>
+                            <a href="/logout">Đăng xuất</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/">Trang chủ</a></li>
+                    <li><a href="/deposit" class="active">Nạp tiền</a></li>
+                    <li><a href="/history">Lịch sử đơn hàng</a></li>
+                    <li><a href="/profile">Hồ sơ cá nhân</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Promotion & Layout Grid -->
+        <div class="deposit-grid">
+            <!-- Promotion Table -->
+            <div class="card">
+                <div class="card-body" style="padding: 0;">
+                    <table class="promo-table">
+                        <thead>
+                            <tr>
+                                <th>Số tiền nạp lớn hơn hoặc bằng</th>
+                                <th>Khuyến mãi thêm</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="promo-amount">100.000.000xu</td>
+                                <td class="promo-bonus">10%</td>
+                            </tr>
+                            <tr>
+                                <td class="promo-amount">30.000.000xu</td>
+                                <td class="promo-bonus">7%</td>
+                            </tr>
+                            <tr>
+                                <td class="promo-amount">10.000.000xu</td>
+                                <td class="promo-bonus">5%</td>
+                            </tr>
+                            <tr>
+                                <td class="promo-amount">5.000.000xu</td>
+                                <td class="promo-bonus">3%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Notes & Bank Info -->
+            <div class="grid-bottom" style="grid-column: 1 / -1;">
+                <!-- Notes -->
+                <div class="card">
+                    <div class="card-header warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>LƯU Ý NẠP TIỀN</h3>
+                    </div>
+                    <div class="card-body">
+                        <ul class="notes-list">
+                            <li>Quét Mã QR để tự động nhập nội dung. Nhập thủ công vui lòng nhập đúng nội dung ck để
+                                được cộng tự động.</li>
+                            <li class="notes-highlight">Nạp tối thiểu 10.000vnd. Nạp dưới sẽ không được cộng với bất cứ
+                                hình thức nào.</li>
+                            <li class="notes-highlight">Nạp sai nội dung bị trừ 30%</li>
+                            <li>Tự động cộng số dư sau khi nạp từ 1-5p, nếu sau khoảng thời gian này không thấy cộng vui
+                                lòng liên hệ admin.</li>
+                            <li class="notes-highlight">Chúng tôi không có chính sách hoàn tiền số dư (tránh việc r.ử.a
+                                t.i.ề.n) nên cân nhắc nạp đủ dùng. Xin cảm ơn.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Bank Transfer -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="bank-info-container">
+                            <div class="bank-details">
+                                <div class="bank-badge">ACB</div>
+                                <p style="font-size: 14px; color: var(--gray-color); margin-bottom: 5px;">Chủ tài khoản:
+                                    <b>NGUYEN VAN A</b>
+                                </p>
+                                <p
+                                    style="font-size: 18px; color: var(--primary-color); font-weight: 700; margin-bottom: 10px;">
+                                    <span id="bankNumber">123456789</span>
+                                    <button class="btn-copy" onclick="copyToClipboard('123456789')"><i
+                                            class="fas fa-copy"></i></button>
+                                </p>
+                                <p
+                                    style="font-size: 14px; background: #fff3f3; color: #e41e3f; padding: 5px; border-radius: 4px; display: inline-block;">
+                                    Nội dung: <b id="transferContent">FBSTORE ...</b>
+                                    <button class="btn-copy" onclick="copyTransferContent()"><i
+                                            class="fas fa-copy"></i></button>
+                                </p>
+                            </div>
+                            <div class="qr-section">
+                                <img id="qrImage" src="" alt="VietQR Pay">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deposit History -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-history"></i>
+                <h3>LỊCH SỬ NẠP TIỀN</h3>
+            </div>
+            <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Mã GD</th>
+                                <th>Thời gian</th>
+                                <th>Số tiền</th>
+                                <th>Phương thức</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 20px;">Đang tải dữ liệu...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Modal -->
+    <div class="modal-overlay" id="notifyModal">
+        <div class="modal-card">
+            <div class="modal-icon" id="modalIcon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h3 class="modal-title" id="modalTitle">Thành công!</h3>
+            <p class="modal-message" id="modalMessage">...</p>
+            <button onclick="closeModal()"
+                style="margin-top: 20px; padding: 10px 30px; border-radius: 8px; border: none; background: var(--primary-color); color: white; cursor: pointer; font-weight: 600;">Đóng</button>
+        </div>
+    </div>
+
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-version">
+                    <span class="version-badge">Version 7.9.7</span>
+                    <span>© 2023 FBStore. Tất cả các quyền được bảo lưu.</span>
+                </div>
+                <p class="developer-credit">
+                    Powered By <a href="https://cmsnt.co" target="_blank" class="developer-link">CMSNT.CO</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Dropdown Handlers (Synced from Profile/Index)
+        function toggleUserMenu(event) {
+            event.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleToolsMenu(event) {
+            event.stopPropagation();
+            document.getElementById('toolsDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('miscDropdown').classList.remove('active');
+        }
+
+        function toggleMiscMenu(event) {
+            event.stopPropagation();
+            document.getElementById('miscDropdown').classList.toggle('active');
+            document.getElementById('userDropdown').classList.remove('active');
+            document.getElementById('toolsDropdown').classList.remove('active');
+        }
+
+        window.onclick = function (event) {
+            const userDropdown = document.getElementById('userDropdown');
+            const userAvatar = document.getElementById('userAvatar');
+            // ... (Other dropdown closes remain same logic implicitly or explicitly)
+
+            if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
+                userDropdown.classList.remove('active');
+            }
+        }
+
+        // --- Deposit Page Logic ---
+        let currentUsername = '';
+
+        async function initDepositPage() {
+            await loadUserInfo();
+            loadHistory();
+            startPolling();
+        }
+
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/user/status');
+                const data = await response.json();
+
+                if (data.logged_in) {
+                    const user = data.user;
+                    currentUsername = user.username;
+                    const transferContent = `FBSTORE ${currentUsername}`;
+
+                    // Update Transfer Content
+                    document.getElementById('transferContent').innerText = transferContent;
+                    document.getElementById('userAvatar').innerText = user.username.substring(0, 2).toUpperCase();
+
+                    // Update QR Code
+                    // Format: https://img.vietqr.io/image/<BANK>-<ACC_NO>-<TEMPLATE>.jpg?amount=<AMOUNT>&addInfo=<CONTENT>&accountName=<NAME>
+                    // Note: Amount removed to let user input, or default to 0
+                    const qrUrl = `https://img.vietqr.io/image/ACB-123456789-compact2.jpg?addInfo=${encodeURIComponent(transferContent)}&accountName=NGUYEN%20VAN%20A`;
+                    document.getElementById('qrImage').src = qrUrl;
+
+                } else {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('User Info Error:', error);
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/deposits?limit=10');
+                const data = await response.json();
+                const tbody = document.getElementById('historyTableBody');
+
+                if (data.success && data.deposits.length > 0) {
+                    tbody.innerHTML = data.deposits.map(d => `
+                        <tr>
+                            <td><span style="font-family: monospace; color: #1877F2;">${d.transaction_id}</span></td>
+                            <td>${new Date(d.created_at).toLocaleString('vi-VN')}</td>
+                            <td style="font-weight: 700; color: var(--secondary-color);">+${parseFloat(d.amount).toLocaleString('vi-VN')}đ</td>
+                            <td>${d.method.toUpperCase()}</td>
+                            <td>
+                                <span class="badge ${d.status === 'completed' ? 'badge-success' : (d.status === 'pending' ? 'badge-pending' : 'badge-danger')}">
+                                    ${d.status === 'completed' ? 'Thành công' : (d.status === 'pending' ? 'Chờ xử lý' : 'Thất bại')}
+                                </span>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--gray-color);">Chưa có giao dịch nào.</td></tr>';
+                }
+            } catch (error) {
+                console.error('History Error:', error);
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotify('success', 'Đã sao chép', text);
+            });
+        }
+
+        function copyTransferContent() {
+            const content = document.getElementById('transferContent').innerText;
+            copyToClipboard(content);
+        }
+
+        // Notification Modal
+        function showNotify(type, title, message) {
+            const modal = document.getElementById('notifyModal');
+            const icon = document.getElementById('modalIcon');
+
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+
+            if (type === 'success') {
+                icon.className = 'modal-icon icon-success';
+                icon.innerHTML = '<i class="fas fa-check"></i>';
+            } else {
+                icon.className = 'modal-icon icon-error';
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            }
+
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('notifyModal').classList.remove('active');
+        }
+
+        // Polling System
+        let pollInterval;
+
+        function startPolling() {
+            // Poll every 15 seconds
+            pollInterval = setInterval(checkNewDeposit, 15000);
+        }
+
+        async function checkNewDeposit() {
+            try {
+                const response = await fetch('/api/deposits/check-new');
+                const data = await response.json();
+
+                if (data.success && data.new_deposit) {
+                    const deposit = data.deposit;
+
+                    // Show Notification
+                    showNotify('success', 'Nạp tiền thành công!', `Bạn vừa nạp thành công ${parseFloat(deposit.amount).toLocaleString('vi-VN')}đ vào tài khoản.`);
+
+                    // Reload History
+                    loadHistory();
+
+                    // Mark as seen
+                    await fetch('/api/deposits/mark-seen', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ deposit_id: deposit.id })
+                    });
+                }
+            } catch (error) {
+                console.error('Polling Error:', error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', initDepositPage);
+
+    </script>
+</body>
+
+</html>

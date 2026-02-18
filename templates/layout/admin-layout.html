@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard Quản trị{% endblock %} - FBStore</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1877F2;
+            --secondary-color: #42B72A;
+            --dark-sidebar: #1C1E21;
+            --light-bg: #F0F2F5;
+            --text-color: #050505;
+            --gray-color: #65676B;
+            --border-color: #DADDE1;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--dark-sidebar);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .admin-logo span {
+            color: white;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .menu-label {
+            padding: 10px 25px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #8A8D91;
+            letter-spacing: 1px;
+        }
+
+        .menu-item-wrapper {
+            margin-bottom: 2px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #B0B3B8;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            gap: 12px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item.active {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .has-submenu {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chevron {
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item-wrapper.active .chevron {
+            transform: rotate(90deg);
+        }
+
+        .submenu {
+            display: none;
+            list-style: none;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px 0;
+        }
+
+        .menu-item-wrapper.active .submenu {
+            display: block;
+        }
+
+        .submenu-item {
+            display: block;
+            padding: 10px 45px;
+            color: #8A8D91;
+            font-size: 13px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .submenu-item:hover,
+        .submenu-item.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .submenu-item.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            height: 60px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+            z-index: 99;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toggle-btn {
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--gray-color);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .top-icon {
+            color: var(--gray-color);
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .dashboard-container {
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+            {
+            % block extra_css %
+        }
+
+            {
+            % endblock %
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="admin-logo">FB<span>Store</span></div>
+        </div>
+        <div class="sidebar-menu">
+            <p class="menu-label">Chính</p>
+            <div class="menu-item-wrapper" id="dashboardMenu">
+                <a href="{{ url_for('admin.dashboard') }}"
+                    class="menu-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+
+            <p class="menu-label">Dịch vụ</p>
+            <div class="menu-item-wrapper {% if active_page in ['categories', 'products', 'orders', 'inventory'] %}active{% endif %}"
+                id="productMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('productMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-shopping-cart"></i> Sản phẩm
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page in ['categories', 'products' , 'orders' , 'inventory' ]
+                    %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.categories') }}"
+                            class="submenu-item {% if active_page == 'categories' %}active{% endif %}">Chuyên mục</a>
+                    </li>
+                    <li><a href="{{ url_for('admin.products') }}"
+                            class="submenu-item {% if active_page == 'products' %}active{% endif %}">Tất cả sản phẩm</a>
+                    </li>
+                    <li><a href="#" class="submenu-item">Kết nối API</a></li>
+                    <li><a href="{{ url_for('admin.orders') }}"
+                            class="submenu-item {% if active_page == 'orders' %}active{% endif %}">Đơn hàng</a></li>
+                    <li><a href="#" class="submenu-item">Tài khoản đã bán</a></li>
+                    <li><a href="{{ url_for('admin.inventory') }}"
+                            class="submenu-item {% if active_page == 'inventory' %}active{% endif %}">Tài khoản trong
+                            kho</a></li>
+                </ul>
+            </div>
+
+            <p class="menu-label">Tài chính</p>
+            <div class="menu-item-wrapper {% if active_page in ['banks', 'deposits'] %}active{% endif %}"
+                id="depositMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('depositMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-wallet"></i> Nạp tiền
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page in ['banks', 'deposits' ] %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.banks') }}"
+                            class="submenu-item {% if active_page == 'banks' %}active{% endif %}">Ngân hàng</a></li>
+                    <li><a href="{{ url_for('admin.deposits') }}"
+                            class="submenu-item {% if active_page == 'deposits' %}active{% endif %}">Lịch sử nạp</a>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="menu-label">Quản lý</p>
+            <div class="menu-item-wrapper {% if active_page == 'novery' %}active{% endif %}" id="accountMgmtMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('accountMgmtMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-user-shield"></i> Quản lý tài khoản
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page=='novery' %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.novery') }}"
+                            class="submenu-item {% if active_page == 'novery' %}active{% endif %}">Tài Khoản Novery</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-item-wrapper {% if active_page == 'users' %}active{% endif %}" id="memberMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('memberMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-users"></i> Thành viên
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page=='users' %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.users') }}"
+                            class="submenu-item {% if active_page == 'users' %}active{% endif %}">Quản lý thành viên</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-item-wrapper" id="settingMenu">
+                <div class="menu-item"><i class="fas fa-cog"></i> Cài đặt hệ thống</div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left"><i class="fas fa-bars toggle-btn"></i>
+                <h4 style="font-weight: 600; font-size: 15px;">Admin Panel</h4>
+            </div>
+            <div class="topbar-right">
+                <div class="top-icon"><i class="fas fa-bell"></i></div>
+                <div class="admin-profile">
+                    <div class="admin-avatar">AD</div>
+                    <span style="font-size: 13px; font-weight: 600; color: var(--gray-color);">Administrator</span>
+                </div>
+            </div>
+        </header>
+        <div class="dashboard-container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <script>
+        function toggleSubmenu(id) {
+            const wrapper = document.getElementById(id);
+            wrapper.classList.toggle('active');
+            const submenu = wrapper.querySelector('.submenu');
+            submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block';
+        }
+        document.querySelector('.toggle-btn').addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.width = (sidebar.style.width === '0px') ? '260px' : '0px';
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Thành viên - FBStore Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1877F2;
+            --secondary-color: #42B72A;
+            --dark-sidebar: #1C1E21;
+            --light-bg: #F0F2F5;
+            --text-color: #050505;
+            --gray-color: #65676B;
+            --border-color: #DADDE1;
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--dark-sidebar);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .admin-logo span {
+            color: white;
+        }
+
+        .sidebar-menu {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .menu-label {
+            padding: 10px 25px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #8A8D91;
+            letter-spacing: 1px;
+        }
+
+        .menu-item-wrapper {
+            margin-bottom: 2px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            color: #B0B3B8;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            cursor: pointer;
+            gap: 12px;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .menu-item:hover,
+        .menu-item.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--primary-color);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .topbar {
+            height: 60px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .toggle-btn {
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--gray-color);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .dashboard-container {
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark-sidebar);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            padding: 15px 12px;
+            border-bottom: 2px solid var(--border-color);
+            color: var(--gray-color);
+            font-weight: 700;
+            background: #F8F9FA;
+        }
+
+        .admin-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .badge-success {
+            background: rgba(66, 183, 42, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .badge-danger {
+            background: rgba(250, 62, 62, 0.1);
+            color: #FA3E3E;
+        }
+
+        .badge-info {
+            background: rgba(24, 119, 242, 0.1);
+            color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            justify-content: center;
+            background: #F0F2F5;
+            color: var(--gray-color);
+        }
+
+        .btn-icon:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal-card {
+            background: white;
+            width: 500px;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="admin-logo">FB<span>Store</span></div>
+        </div>
+        <div class="sidebar-menu">
+            <p class="menu-label">Chính</p>
+            <div class="menu-item-wrapper" id="dashboardMenu">
+                <a href="{{ url_for('admin.dashboard') }}"
+                    class="menu-item {% if active_page == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+            </div>
+
+            <p class="menu-label">Dịch vụ</p>
+            <div class="menu-item-wrapper {% if active_page in ['categories', 'products', 'orders', 'inventory'] %}active{% endif %}"
+                id="productMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('productMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-shopping-cart"></i> Sản phẩm
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page in ['categories', 'products' , 'orders' , 'inventory' ]
+                    %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.categories') }}"
+                            class="submenu-item {% if active_page == 'categories' %}active{% endif %}">Chuyên mục</a>
+                    </li>
+                    <li><a href="{{ url_for('admin.products') }}"
+                            class="submenu-item {% if active_page == 'products' %}active{% endif %}">Tất cả sản phẩm</a>
+                    </li>
+                    <li><a href="#" class="submenu-item">Kết nối API</a></li>
+                    <li><a href="{{ url_for('admin.orders') }}"
+                            class="submenu-item {% if active_page == 'orders' %}active{% endif %}">Đơn hàng</a></li>
+                    <li><a href="#" class="submenu-item">Tài khoản đã bán</a></li>
+                    <li><a href="{{ url_for('admin.inventory') }}"
+                            class="submenu-item {% if active_page == 'inventory' %}active{% endif %}">Tài khoản trong
+                            kho</a></li>
+                </ul>
+            </div>
+
+            <p class="menu-label">Tài chính</p>
+            <div class="menu-item-wrapper {% if active_page in ['banks', 'deposits'] %}active{% endif %}"
+                id="depositMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('depositMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-wallet"></i> Nạp tiền
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page in ['banks', 'deposits' ] %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.banks') }}"
+                            class="submenu-item {% if active_page == 'banks' %}active{% endif %}">Ngân hàng</a></li>
+                    <li><a href="{{ url_for('admin.deposits') }}"
+                            class="submenu-item {% if active_page == 'deposits' %}active{% endif %}">Lịch sử nạp</a>
+                    </li>
+                </ul>
+            </div>
+
+            <p class="menu-label">Quản lý</p>
+            <div class="menu-item-wrapper {% if active_page == 'novery' %}active{% endif %}" id="accountMgmtMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('accountMgmtMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-user-shield"></i> Quản lý tài khoản
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page=='novery' %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.novery') }}"
+                            class="submenu-item {% if active_page == 'novery' %}active{% endif %}">Tài Khoản Novery</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-item-wrapper {% if active_page == 'users' %}active{% endif %}" id="memberMenu">
+                <div class="menu-item has-submenu" onclick="toggleSubmenu('memberMenu')">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="fas fa-users"></i> Thành viên
+                    </div>
+                    <i class="fas fa-chevron-right chevron"></i>
+                </div>
+                <ul class="submenu" {% if active_page=='users' %}style="display: block;" {% endif %}>
+                    <li><a href="{{ url_for('admin.users') }}"
+                            class="submenu-item {% if active_page == 'users' %}active{% endif %}">Quản lý thành viên</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="menu-item-wrapper" id="settingMenu">
+                <div class="menu-item">
+                    <i class="fas fa-cog"></i> Cài đặt hệ thống
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <i class="fas fa-bars toggle-btn"></i>
+                <h4 style="font-weight: 600; font-size: 15px;">Quản lý Thành viên</h4>
+            </div>
+            <div class="topbar-right">
+                <div class="admin-avatar">AD</div>
+            </div>
+        </header>
+
+        <div class="dashboard-container">
+            <div class="page-header">
+                <h1 class="page-title">Danh sách Thành viên</h1>
+            </div>
+
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Người dùng</th>
+                                <th>Email</th>
+                                <th>Số dư</th>
+                                <th>Vai trò</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày tham gia</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="8" style="text-align: center;">Đang tải...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Chỉnh Sửa Thành Viên -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modalTitle" style="font-size: 18px;">Chỉnh sửa Thành viên</h2>
+                <i class="fas fa-times" style="cursor: pointer;" onclick="closeModal()"></i>
+            </div>
+            <form id="userForm">
+                <input type="hidden" id="editUserId">
+                <div class="form-group">
+                    <label>Tên đăng nhập</label>
+                    <input type="text" id="editUsername" class="form-control" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Số dư (VNĐ)</label>
+                    <input type="number" id="editBalance" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Vai trò</label>
+                    <select id="editRole" class="form-control">
+                        <option value="user">Người dùng</option>
+                        <option value="admin">Quản trị viên</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <select id="editStatus" class="form-control">
+                        <option value="active">Hoạt động</option>
+                        <option value="banned">Bị cấm</option>
+                    </select>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()"
+                        style="background: #eee;">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('.toggle-btn').addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.style.width = (sidebar.style.width === '0px' || sidebar.style.width === '') ? '260px' : '0px';
+        });
+
+        function toggleSubmenu(id) {
+            const wrapper = document.getElementById(id);
+            wrapper.classList.toggle('active');
+        }
+
+        let users = [];
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch('/admin/api/users');
+                const data = await response.json();
+                if (data.success) {
+                    users = data.users;
+                    renderUsers();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function renderUsers() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            users.forEach(u => {
+                const date = new Date(u.created_at).toLocaleDateString('vi-VN');
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${u.id}</td>
+                        <td style="font-weight: 600;">${u.username}</td>
+                        <td>${u.email}</td>
+                        <td style="font-weight: 700; color: var(--secondary-color);">${parseInt(u.balance).toLocaleString()}đ</td>
+                        <td><span class="badge ${u.role === 'admin' ? 'badge-danger' : 'badge-info'}">${u.role.toUpperCase()}</span></td>
+                        <td><span class="badge ${u.status === 'active' ? 'badge-success' : 'badge-danger'}">
+                            ${u.status === 'active' ? 'Hoạt động' : 'Bị cấm'}
+                        </span></td>
+                        <td style="font-size: 13px; color: var(--gray-color);">${date}</td>
+                        <td>
+                            <button class="btn btn-icon edit" onclick="editUser(${u.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function editUser(id) {
+            const u = users.find(user => user.id === id);
+            document.getElementById('editUserId').value = u.id;
+            document.getElementById('editUsername').value = u.username;
+            document.getElementById('editBalance').value = u.balance;
+            document.getElementById('editRole').value = u.role;
+            document.getElementById('editStatus').value = u.status;
+            document.getElementById('userModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('userModal').style.display = 'none';
+        }
+
+        document.getElementById('userForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const data = {
+                id: document.getElementById('editUserId').value,
+                balance: document.getElementById('editBalance').value,
+                role: document.getElementById('editRole').value,
+                status: document.getElementById('editStatus').value
+            };
+
+            try {
+                const response = await fetch('/admin/api/users/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    closeModal();
+                    fetchUsers();
+                } else {
+                    alert('Lỗi: ' + result.error);
+                }
+            } catch (error) {
+                alert('Lỗi kết nối server!');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', fetchUsers);
+    </script>
+</body>
+
+</html>
