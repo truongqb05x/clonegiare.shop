@@ -157,14 +157,14 @@
                     <div class="card-body">
                         <div class="bank-info-container">
                             <div class="bank-details">
-                                <div class="bank-badge">ACB</div>
+                                <div class="bank-badge" id="bankBadge">...</div>
                                 <p style="font-size: 14px; color: var(--gray-color); margin-bottom: 5px;">Chủ tài khoản:
-                                    <b>NGUYEN VAN A</b>
+                                    <b id="bankOwner">...</b>
                                 </p>
                                 <p
                                     style="font-size: 18px; color: var(--primary-color); font-weight: 700; margin-bottom: 10px;">
-                                    <span id="bankNumber">123456789</span>
-                                    <button class="btn-copy" onclick="copyToClipboard('123456789')"><i
+                                    <span id="bankNumber">...</span>
+                                    <button class="btn-copy" onclick="copyBankNumber()"><i
                                             class="fas fa-copy"></i></button>
                                 </p>
                                 <p
@@ -175,8 +175,9 @@
                                 </p>
                             </div>
                             <div class="qr-section">
-                                <img id="qrImage" src="" alt="VietQR Pay">
-
+                                <img id="qrImage" src="" alt="QR Pay" style="display:none;">
+                                <p id="qrLoading" style="color:#999;font-size:13px;"><i
+                                        class="fas fa-spinner fa-spin"></i> Đang tải QR...</p>
                             </div>
                         </div>
                     </div>
@@ -278,6 +279,7 @@
 
         // --- Deposit Page Logic ---
         let currentUsername = '';
+        let activeBankData = null;
 
         async function initDepositPage() {
             await loadUserInfo();
@@ -287,29 +289,66 @@
 
         async function loadUserInfo() {
             try {
-                const response = await fetch('/api/user/status');
-                const data = await response.json();
+                const [userResp, bankResp] = await Promise.all([
+                    fetch('/api/user/status'),
+                    fetch('/api/bank/active')
+                ]);
+                const userData = await userResp.json();
+                const bankData = await bankResp.json();
 
-                if (data.logged_in) {
-                    const user = data.user;
-                    currentUsername = user.username;
-                    const transferContent = `FBSTORE ${currentUsername}`;
-
-                    // Update Transfer Content
-                    document.getElementById('transferContent').innerText = transferContent;
-                    document.getElementById('userAvatar').innerText = user.username.substring(0, 2).toUpperCase();
-
-                    // Update QR Code
-                    // Format: https://img.vietqr.io/image/<BANK>-<ACC_NO>-<TEMPLATE>.jpg?amount=<AMOUNT>&addInfo=<CONTENT>&accountName=<NAME>
-                    // Note: Amount removed to let user input, or default to 0
-                    const qrUrl = `https://img.vietqr.io/image/ACB-123456789-compact2.jpg?addInfo=${encodeURIComponent(transferContent)}&accountName=NGUYEN%20VAN%20A`;
-                    document.getElementById('qrImage').src = qrUrl;
-
-                } else {
+                if (!userData.logged_in) {
                     window.location.href = '/login';
+                    return;
                 }
+
+                const user = userData.user;
+                currentUsername = user.username;
+                const transferContent = `FBSTORE ${currentUsername}`;
+                document.getElementById('transferContent').innerText = transferContent;
+                document.getElementById('userAvatar').innerText = user.username.substring(0, 2).toUpperCase();
+
+                // Load bank info from backend
+                if (bankData.success && bankData.bank) {
+                    activeBankData = bankData.bank;
+                    const bank = bankData.bank;
+                    document.getElementById('bankBadge').textContent = bank.bank_name;
+                    document.getElementById('bankOwner').textContent = bank.account_name;
+                    document.getElementById('bankNumber').textContent = bank.account_number;
+
+                    // Build QR URL
+                    let qrUrl;
+                    if (bank.qr_url && bank.qr_url.trim()) {
+                        // Use admin-configured QR URL, append des= with transfer content
+                        const base = bank.qr_url.replace(/&?des=[^&]*/g, ''); // remove old des if any
+                        const sep = base.includes('?') ? '&' : '?';
+                        qrUrl = base + (base.endsWith('&') || base.endsWith('?') ? '' : '&') + 'des=' + encodeURIComponent(transferContent);
+                        // Clean up double && or ?&
+                        qrUrl = qrUrl.replace(/&&/g, '&').replace(/\?&/g, '?');
+                    } else if (bank.bank_code) {
+                        // Fallback: build sepay URL from bank_code + account_number
+                        qrUrl = `https://qr.sepay.vn/img?bank=${encodeURIComponent(bank.bank_code)}&acc=${encodeURIComponent(bank.account_number)}&template=compact&amount=&des=${encodeURIComponent(transferContent)}`;
+                    } else {
+                        qrUrl = null;
+                    }
+
+                    const qrImg = document.getElementById('qrImage');
+                    const qrLoading = document.getElementById('qrLoading');
+                    if (qrUrl) {
+                        qrImg.src = qrUrl;
+                        qrImg.style.display = '';
+                        qrLoading.style.display = 'none';
+                    } else {
+                        qrLoading.textContent = 'Chưa có mã QR';
+                    }
+                } else {
+                    document.getElementById('bankBadge').textContent = 'Chưa có ngân hàng';
+                    document.getElementById('bankOwner').textContent = '-';
+                    document.getElementById('bankNumber').textContent = '-';
+                    document.getElementById('qrLoading').textContent = 'Admin chưa cấu hình ngân hàng';
+                }
+
             } catch (error) {
-                console.error('User Info Error:', error);
+                console.error('Init Error:', error);
             }
         }
 
@@ -339,6 +378,11 @@
             } catch (error) {
                 console.error('History Error:', error);
             }
+        }
+
+        function copyBankNumber() {
+            const num = document.getElementById('bankNumber').textContent;
+            copyToClipboard(num);
         }
 
         function copyToClipboard(text) {

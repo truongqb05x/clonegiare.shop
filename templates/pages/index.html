@@ -533,6 +533,7 @@
                 navMenu.innerHTML = `<li><a href="/" class="${currentPath === '/' ? 'active' : ''}" onclick="navigate('/', event)">Trang chủ</a></li>`;
 
                 categories.forEach(cat => {
+                    if (!cat.slug) return; // skip categories without slug
                     const li = document.createElement('li');
                     const path = `/category/${cat.slug}`;
                     li.innerHTML = `<a href="${path}" class="${currentPath === path ? 'active' : ''}" onclick="navigate('${path}', event)">${cat.name}</a>`;
@@ -591,7 +592,7 @@
                                             <div>
                                                 <h3>${p.name}</h3>
                                                 <p class="product-description">${p.description}</p>
-                                                <div class="product-meta">Kho hàng: ${p.stock}</div>
+                                                <div class="product-meta">Kho hàng: ${p.stock} &nbsp;|&nbsp; Đã bán: ${p.sold_count || 0}</div>
                                             </div>
                                             <div class="product-actions">
                                                 <div class="product-price">${parseFloat(p.price).toLocaleString('vi-VN')}đ</div>

@@ -3,6 +3,25 @@ from ..utils.db import get_db_connection
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
+@api_bp.route('/bank/active', methods=['GET'])
+def get_active_bank():
+    """Public endpoint - returns the first active bank for deposit page"""
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT id, bank_name, bank_code, account_number, account_name, qr_url FROM banks WHERE status = 'active' ORDER BY id ASC LIMIT 1")
+        bank = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        if bank:
+            return jsonify({'success': True, 'bank': bank})
+        return jsonify({'success': False, 'error': 'No active bank configured'})
+    except Exception as e:
+        if conn: conn.close()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 @api_bp.route('/user/status', methods=['GET'])
 def user_status():
     if 'user_id' in session:
@@ -173,7 +192,8 @@ def get_products():
         cursor = conn.cursor(dictionary=True)
         cursor.execute("""
             SELECT p.*, c.name as category_name, 
-            (SELECT COUNT(*) FROM accounts a WHERE a.product_id = p.id AND a.status = 'live') as stock
+            (SELECT COUNT(*) FROM accounts a WHERE a.product_id = p.id AND a.status = 'live') as stock,
+            (SELECT COUNT(*) FROM accounts a WHERE a.product_id = p.id AND a.status = 'sold') as sold_count
             FROM products p
             JOIN categories c ON p.category_id = c.id
             WHERE p.status = 'active'

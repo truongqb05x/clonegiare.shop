@@ -9,7 +9,7 @@ class Config:
         'host': os.environ.get('DB_HOST', '103.82.24.7'),
         'user': os.environ.get('DB_USER', 'mmddllg_huehub'),
         'password': os.environ.get('DB_PASS', 'Ngoctruong123@'),
-        'database': os.environ.get('DB_NAME', 'mmddllg_fbstore')
+        'database': os.environ.get('DB_NAME', 'mmddllg_fbstorea')
     }
     
     # Session configuration

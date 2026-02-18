@@ -270,6 +270,8 @@
             display: flex;
             gap: 15px;
             margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
         .form-control {
@@ -278,6 +280,288 @@
             border-radius: 8px;
             outline: none;
             font-size: 14px;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #1877F2, #0d5fc4);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(24, 119, 242, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(24, 119, 242, 0.45);
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(3px);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            width: 480px;
+            max-width: 95vw;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: modalIn 0.25s ease;
+            overflow: hidden;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.93) translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            font-size: 17px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-color);
+        }
+
+        .modal-header h3 i {
+            color: var(--primary-color);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light-bg);
+            cursor: pointer;
+            font-size: 15px;
+            color: var(--gray-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: #FA3E3E;
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-color);
+            margin-bottom: 6px;
+        }
+
+        .form-group .form-control {
+            width: 100%;
+        }
+
+        /* User search */
+        .user-search-wrap {
+            position: relative;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            z-index: 100;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .user-dropdown.open {
+            display: block;
+        }
+
+        .user-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .user-option:hover {
+            background: var(--light-bg);
+        }
+
+        .user-option-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1877F2, #42B72A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .user-option-info small {
+            display: block;
+            font-size: 11px;
+            color: var(--gray-color);
+        }
+
+        .user-option-info strong {
+            font-size: 13px;
+        }
+
+        .selected-user-card {
+            display: none;
+            background: linear-gradient(135deg, #EBF3FF, #F0FFF4);
+            border: 1.5px solid #1877F2;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .selected-user-card.show {
+            display: flex;
+        }
+
+        .selected-user-card .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1877F2, #42B72A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .selected-user-card .info strong {
+            font-size: 14px;
+            display: block;
+        }
+
+        .selected-user-card .info small {
+            font-size: 12px;
+            color: var(--gray-color);
+        }
+
+        .selected-user-card .balance-badge {
+            margin-left: auto;
+            background: white;
+            border: 1px solid #1877F2;
+            color: #1877F2;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            background: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--gray-color);
+            transition: var(--transition);
+        }
+
+        .btn-cancel:hover {
+            background: #e4e6ea;
+        }
+
+        .alert-msg {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .alert-msg.success {
+            background: rgba(66, 183, 42, 0.1);
+            color: #2e7d1e;
+            border: 1px solid rgba(66, 183, 42, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-msg.error {
+            background: rgba(250, 62, 62, 0.1);
+            color: #c0392b;
+            border: 1px solid rgba(250, 62, 62, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
     </style>
 </head>
@@ -391,16 +675,19 @@
             </div>
 
             <div class="search-row">
-                <input type="text" class="form-control" placeholder="Mã giao dịch..." style="width: 250px;">
-                <input type="text" class="form-control" placeholder="Tên khách hàng..." style="width: 250px;">
-                <select class="form-control" style="width: 150px;">
+                <input type="text" class="form-control" placeholder="Mã giao dịch..." style="width: 220px;">
+                <input type="text" class="form-control" placeholder="Tên khách hàng..." style="width: 220px;">
+                <select class="form-control" style="width: 140px;">
                     <option>Trạng thái</option>
                     <option>Chờ duyệt</option>
                     <option>Thành công</option>
                     <option>Thất bại</option>
                 </select>
-                <button class="btn-icon" style="width: 100px; height: 40px; border-radius: 8px;"><i
+                <button class="btn-icon" style="width: 90px; height: 40px; border-radius: 8px;"><i
                         class="fas fa-search"></i> Tìm</button>
+                <button class="btn-primary" onclick="openInvoiceModal()">
+                    <i class="fas fa-plus-circle"></i> Tạo hóa đơn
+                </button>
             </div>
 
             <div class="card">
@@ -416,30 +703,10 @@
                             <th>Hành động</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="depositsBody">
                         <tr>
-                            <td style="font-weight: 600; color: var(--primary-color);">TRX99281</td>
-                            <td>truongqb05</td>
-                            <td style="font-weight: 700;">100.000đ</td>
-                            <td>Vietcombank</td>
-                            <td>12/01/2026 15:30</td>
-                            <td><span class="badge badge-warning">Chờ duyệt</span></td>
-                            <td>
-                                <div style="display: flex; gap: 5px;">
-                                    <button class="btn-icon btn-check" title="Duyệt"><i
-                                            class="fas fa-check"></i></button>
-                                    <button class="btn-icon btn-times" title="Hủy"><i class="fas fa-times"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight: 600; color: var(--primary-color);">TRX99275</td>
-                            <td>nguyenvana</td>
-                            <td style="font-weight: 700;">50.000đ</td>
-                            <td>Momo</td>
-                            <td>12/01/2026 10:15</td>
-                            <td><span class="badge badge-success">Thành công</span></td>
-                            <td>-</td>
+                            <td colspan="7" style="text-align:center;padding:30px;color:#999;"><i
+                                    class="fas fa-spinner fa-spin"></i> Đang tải...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -447,11 +714,264 @@
         </div>
     </main>
 
+    <!-- ===== MODAL TẠO HÓA ĐƠN ===== -->
+    <div class="modal-overlay" id="invoiceModal" onclick="handleOverlayClick(event)">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-invoice-dollar"></i> Tạo hóa đơn nạp tiền</h3>
+                <button class="modal-close" onclick="closeInvoiceModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert-msg" id="modalAlert"></div>
+
+                <!-- Bước 1: Tìm user -->
+                <div class="form-group">
+                    <label><i class="fas fa-search" style="margin-right:5px;"></i>Tìm khách hàng</label>
+                    <div class="user-search-wrap">
+                        <input type="text" class="form-control" id="userSearchInput"
+                            placeholder="Nhập username hoặc email..." autocomplete="off"
+                            oninput="onUserSearch(this.value)">
+                        <div class="user-dropdown" id="userDropdown"></div>
+                    </div>
+                    <!-- Card hiển thị user đã chọn -->
+                    <div class="selected-user-card" id="selectedUserCard">
+                        <div class="avatar" id="selectedUserAvatar"></div>
+                        <div class="info">
+                            <strong id="selectedUserName"></strong>
+                            <small id="selectedUserEmail"></small>
+                        </div>
+                        <span class="balance-badge" id="selectedUserBalance"></span>
+                    </div>
+                </div>
+
+                <!-- Bước 2: Nhập số tiền -->
+                <div class="form-group">
+                    <label><i class="fas fa-coins" style="margin-right:5px;"></i>Số tiền nạp (VNĐ)</label>
+                    <input type="number" class="form-control" id="depositAmount" placeholder="Ví dụ: 100000" min="1000"
+                        step="1000">
+                </div>
+
+                <!-- Ghi chú -->
+                <div class="form-group">
+                    <label><i class="fas fa-sticky-note" style="margin-right:5px;"></i>Ghi chú</label>
+                    <input type="text" class="form-control" id="depositNote" placeholder="Admin nạp tiền thủ công"
+                        value="Admin nạp tiền thủ công">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeInvoiceModal()">Hủy</button>
+                <button class="btn-primary" id="submitDepositBtn" onclick="submitDeposit()">
+                    <i class="fas fa-check-circle"></i> Xác nhận nạp tiền
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function toggleSubmenu(id) {
             const wrapper = document.getElementById(id);
             wrapper.classList.toggle('active');
         }
+
+        /* ===== INVOICE MODAL ===== */
+        let selectedUserId = null;
+        let searchTimer = null;
+
+        function openInvoiceModal() {
+            resetModal();
+            document.getElementById('invoiceModal').classList.add('open');
+            setTimeout(() => document.getElementById('userSearchInput').focus(), 200);
+        }
+
+        function closeInvoiceModal() {
+            document.getElementById('invoiceModal').classList.remove('open');
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target === document.getElementById('invoiceModal')) closeInvoiceModal();
+        }
+
+        function resetModal() {
+            selectedUserId = null;
+            document.getElementById('userSearchInput').value = '';
+            document.getElementById('depositAmount').value = '';
+            document.getElementById('depositNote').value = 'Admin nạp tiền thủ công';
+            document.getElementById('userDropdown').innerHTML = '';
+            document.getElementById('userDropdown').classList.remove('open');
+            document.getElementById('selectedUserCard').classList.remove('show');
+            hideAlert();
+        }
+
+        function onUserSearch(val) {
+            clearTimeout(searchTimer);
+            const dropdown = document.getElementById('userDropdown');
+            if (!val.trim()) {
+                dropdown.classList.remove('open');
+                dropdown.innerHTML = '';
+                return;
+            }
+            searchTimer = setTimeout(() => fetchUsers(val.trim()), 300);
+        }
+
+        function fetchUsers(q) {
+            fetch(`/admin/api/users/search?q=${encodeURIComponent(q)}`)
+                .then(r => r.json())
+                .then(data => {
+                    const dropdown = document.getElementById('userDropdown');
+                    if (!data.success || !data.users.length) {
+                        dropdown.innerHTML = '<div style="padding:12px 14px;color:#999;font-size:13px;">Không tìm thấy người dùng</div>';
+                        dropdown.classList.add('open');
+                        return;
+                    }
+                    dropdown.innerHTML = data.users.map(u => `
+                        <div class="user-option" onclick="selectUser(${u.id}, '${escHtml(u.username)}', '${escHtml(u.email || '')}', ${u.balance})">
+                            <div class="user-option-avatar">${u.username.charAt(0).toUpperCase()}</div>
+                            <div class="user-option-info">
+                                <strong>${escHtml(u.username)}</strong>
+                                <small>${escHtml(u.email || '')} &nbsp;|&nbsp; Số dư: ${formatMoney(u.balance)}đ</small>
+                            </div>
+                        </div>`).join('');
+                    dropdown.classList.add('open');
+                })
+                .catch(() => { });
+        }
+
+        function selectUser(id, username, email, balance) {
+            selectedUserId = id;
+            document.getElementById('userSearchInput').value = username;
+            document.getElementById('userDropdown').classList.remove('open');
+
+            const card = document.getElementById('selectedUserCard');
+            document.getElementById('selectedUserAvatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('selectedUserName').textContent = username;
+            document.getElementById('selectedUserEmail').textContent = email;
+            document.getElementById('selectedUserBalance').textContent = formatMoney(balance) + 'đ';
+            card.classList.add('show');
+            document.getElementById('depositAmount').focus();
+        }
+
+        function submitDeposit() {
+            hideAlert();
+            if (!selectedUserId) {
+                showAlert('Vui lòng chọn khách hàng', 'error');
+                return;
+            }
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            if (!amount || amount < 1000) {
+                showAlert('Số tiền tối thiểu là 1.000đ', 'error');
+                return;
+            }
+            const note = document.getElementById('depositNote').value.trim() || 'Admin nạp tiền thủ công';
+
+            const btn = document.getElementById('submitDepositBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+
+            fetch('/admin/api/deposits/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: selectedUserId, amount, note })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Xác nhận nạp tiền';
+                    if (data.success) {
+                        showAlert(`✅ Nạp ${formatMoney(amount)}đ cho <strong>${escHtml(data.username)}</strong> thành công! Mã GD: <strong>${data.tx_code}</strong>`, 'success');
+                        // Update balance badge
+                        const curBal = parseFloat(document.getElementById('selectedUserBalance').textContent.replace(/[^0-9]/g, ''));
+                        document.getElementById('selectedUserBalance').textContent = formatMoney(curBal + amount) + 'đ';
+                        document.getElementById('depositAmount').value = '';
+                        loadDeposits(); // reload table;
+                    } else {
+                        showAlert(data.error || 'Có lỗi xảy ra', 'error');
+                    }
+                })
+                .catch(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check-circle"></i> Xác nhận nạp tiền';
+                    showAlert('Lỗi kết nối máy chủ', 'error');
+                });
+        }
+
+        function showAlert(msg, type) {
+            const el = document.getElementById('modalAlert');
+            el.innerHTML = msg;
+            el.className = 'alert-msg ' + type;
+        }
+
+        function hideAlert() {
+            const el = document.getElementById('modalAlert');
+            el.className = 'alert-msg';
+            el.innerHTML = '';
+        }
+
+        function formatMoney(n) {
+            return Number(n || 0).toLocaleString('vi-VN');
+        }
+
+        function escHtml(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.user-search-wrap')) {
+                document.getElementById('userDropdown').classList.remove('open');
+            }
+        });
+
+        /* ===== LOAD DEPOSITS TABLE ===== */
+        function loadDeposits() {
+            fetch('/admin/api/deposits')
+                .then(r => r.json())
+                .then(data => {
+                    const tbody = document.getElementById('depositsBody');
+                    if (!data.success || !data.deposits.length) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">Chưa có giao dịch nào</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = data.deposits.map(d => {
+                        let badgeClass = 'badge-warning', badgeText = 'Chờ duyệt';
+                        if (d.status === 'completed') { badgeClass = 'badge-success'; badgeText = 'Thành công'; }
+                        else if (d.status === 'failed') { badgeClass = 'badge-danger'; badgeText = 'Thất bại'; }
+
+                        const actions = d.status === 'pending' ? `
+                            <div style="display:flex;gap:5px;">
+                                <button class="btn-icon btn-check" title="Duyệt" onclick="approveDeposit(${d.id})"><i class="fas fa-check"></i></button>
+                                <button class="btn-icon btn-times" title="Hủy" onclick="rejectDeposit(${d.id})"><i class="fas fa-times"></i></button>
+                            </div>` : '<span style="color:#ccc;">-</span>';
+
+                        return `<tr>
+                            <td style="font-weight:600;color:var(--primary-color);">${escHtml(d.transaction_id)}</td>
+                            <td>${escHtml(d.username)}</td>
+                            <td style="font-weight:700;">${formatMoney(d.amount)}đ</td>
+                            <td>${escHtml(d.method)}</td>
+                            <td>${escHtml(d.created_at)}</td>
+                            <td><span class="badge ${badgeClass}">${badgeText}</span></td>
+                            <td>${actions}</td>
+                        </tr>`;
+                    }).join('');
+                })
+                .catch(() => {
+                    document.getElementById('depositsBody').innerHTML =
+                        '<tr><td colspan="7" style="text-align:center;padding:30px;color:#FA3E3E;">Lỗi tải dữ liệu</td></tr>';
+                });
+        }
+
+        function approveDeposit(id) {
+            if (!confirm('Xác nhận duyệt giao dịch này?')) return;
+            fetch('/admin/api/deposits/' + id + '/approve', { method: 'POST' })
+                .then(r => r.json()).then(d => { if (d.success) loadDeposits(); else alert(d.error); });
+        }
+
+        function rejectDeposit(id) {
+            if (!confirm('Xác nhận hủy giao dịch này?')) return;
+            fetch('/admin/api/deposits/' + id + '/reject', { method: 'POST' })
+                .then(r => r.json()).then(d => { if (d.success) loadDeposits(); else alert(d.error); });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDeposits);
     </script>
 </body>
 

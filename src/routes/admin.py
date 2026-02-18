@@ -511,7 +511,232 @@ def delete_user(user_id):
 def banks():
     return render_template('admin/admin-banks.html', active_page='banks')
 
+@admin_bp.route('/api/banks')
+@admin_required
+def get_banks():
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM banks ORDER BY id DESC")
+        rows = cursor.fetchall()
+        cursor.close()
+        for r in rows:
+            if r.get('created_at'):
+                r['created_at'] = r['created_at'].strftime('%d/%m/%Y')
+        return jsonify({'success': True, 'banks': rows})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
+@admin_bp.route('/api/banks/add', methods=['POST'])
+@admin_required
+def add_bank():
+    data = request.json
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO banks (bank_name, account_number, account_name, bank_code, qr_url, status) VALUES (%s,%s,%s,%s,%s,%s)",
+            (data.get('bank_name'), data.get('account_number'), data.get('account_name'),
+             data.get('bank_code',''), data.get('qr_url',''), data.get('status','active'))
+        )
+        conn.commit()
+        cursor.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
+@admin_bp.route('/api/banks/update', methods=['POST'])
+@admin_required
+def update_bank():
+    data = request.json
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+            "UPDATE banks SET bank_name=%s, account_number=%s, account_name=%s, bank_code=%s, qr_url=%s, status=%s WHERE id=%s",
+            (data.get('bank_name'), data.get('account_number'), data.get('account_name'),
+             data.get('bank_code',''), data.get('qr_url',''), data.get('status','active'), data.get('id'))
+        )
+        conn.commit()
+        cursor.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
+@admin_bp.route('/api/banks/delete/<int:bank_id>', methods=['POST'])
+@admin_required
+def delete_bank(bank_id):
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM banks WHERE id=%s", (bank_id,))
+        conn.commit()
+        cursor.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
 @admin_bp.route('/deposits')
 @admin_required
 def deposits():
     return render_template('admin/admin-deposits.html', active_page='deposits')
+
+@admin_bp.route('/api/deposits')
+@admin_required
+def get_deposits():
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT d.id, d.transaction_id, d.amount, d.method, d.status, d.created_at,
+                   u.username
+            FROM deposits d
+            JOIN users u ON d.user_id = u.id
+            ORDER BY d.created_at DESC
+            LIMIT 200
+        """)
+        rows = cursor.fetchall()
+        cursor.close()
+        # Convert datetime to string for JSON
+        for r in rows:
+            if r.get('created_at'):
+                r['created_at'] = r['created_at'].strftime('%d/%m/%Y %H:%M')
+        return jsonify({'success': True, 'deposits': rows})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
+@admin_bp.route('/api/deposits/<int:deposit_id>/approve', methods=['POST'])
+@admin_required
+def approve_deposit(deposit_id):
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM deposits WHERE id = %s AND status = 'pending'", (deposit_id,))
+        dep = cursor.fetchone()
+        if not dep:
+            return jsonify({'success': False, 'error': 'Không tìm thấy giao dịch hoặc đã xử lý'}), 404
+        cursor.execute("UPDATE deposits SET status = 'completed' WHERE id = %s", (deposit_id,))
+        cursor.execute("UPDATE users SET balance = balance + %s WHERE id = %s", (dep['amount'], dep['user_id']))
+        conn.commit()
+        cursor.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        if conn: conn.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
+@admin_bp.route('/api/deposits/<int:deposit_id>/reject', methods=['POST'])
+@admin_required
+def reject_deposit(deposit_id):
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor()
+        cursor.execute("UPDATE deposits SET status = 'failed' WHERE id = %s AND status = 'pending'", (deposit_id,))
+        conn.commit()
+        cursor.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
+@admin_bp.route('/api/users/search')
+@admin_required
+def search_users():
+    q = request.args.get('q', '').strip()
+    if not q:
+        return jsonify({'success': True, 'users': []})
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(
+            """SELECT id, username, email, balance FROM users
+               WHERE username LIKE %s OR email LIKE %s
+               ORDER BY username ASC LIMIT 10""",
+            (f'%{q}%', f'%{q}%')
+        )
+        users = cursor.fetchall()
+        cursor.close()
+        return jsonify({'success': True, 'users': users})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()
+
+@admin_bp.route('/api/deposits/create', methods=['POST'])
+@admin_required
+def create_deposit():
+    data = request.json
+    user_id = data.get('user_id')
+    amount = data.get('amount')
+    note = data.get('note', 'Admin nạp tiền thủ công')
+
+    if not user_id or not amount:
+        return jsonify({'success': False, 'error': 'Thiếu thông tin bắt buộc'}), 400
+    try:
+        amount = float(amount)
+        if amount <= 0:
+            return jsonify({'success': False, 'error': 'Số tiền phải lớn hơn 0'}), 400
+    except (ValueError, TypeError):
+        return jsonify({'success': False, 'error': 'Số tiền không hợp lệ'}), 400
+
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+    try:
+        cursor = conn.cursor(dictionary=True)
+        # Verify user exists
+        cursor.execute("SELECT id, username, balance FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+        if not user:
+            return jsonify({'success': False, 'error': 'Không tìm thấy người dùng'}), 404
+
+        import uuid
+        tx_code = 'ADM' + uuid.uuid4().hex[:8].upper()
+
+        # Insert deposit record with status 'completed'
+        cursor.execute(
+            """INSERT INTO deposits (user_id, amount, method, transaction_id, status, created_at)
+               VALUES (%s, %s, %s, %s, 'completed', NOW())""",
+            (user_id, amount, 'Admin', tx_code)
+        )
+        # Update user balance
+        cursor.execute(
+            "UPDATE users SET balance = balance + %s WHERE id = %s",
+            (amount, user_id)
+        )
+        conn.commit()
+        cursor.close()
+        return jsonify({'success': True, 'tx_code': tx_code, 'username': user['username']})
+    except Exception as e:
+        if conn: conn.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+    finally:
+        if conn: conn.close()

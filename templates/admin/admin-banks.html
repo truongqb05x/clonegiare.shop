@@ -460,26 +460,10 @@
                             <th>Hành động</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="banksBody">
                         <tr>
-                            <td><i class="fas fa-university" style="font-size: 24px; color: #00468c;"></i></td>
-                            <td style="font-weight: 600;">Vietcombank</td>
-                            <td style="font-family: monospace;">1024567890</td>
-                            <td>NGUYEN VAN A</td>
-                            <td><span class="badge badge-success">Hoạt động</span></td>
-                            <td>
-                                <button class="btn btn-icon"><i class="fas fa-edit"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><i class="fas fa-wallet" style="font-size: 24px; color: #ae2070;"></i></td>
-                            <td style="font-weight: 600;">Momo</td>
-                            <td style="font-family: monospace;">0987654321</td>
-                            <td>NGUYEN VAN A</td>
-                            <td><span class="badge badge-success">Hoạt động</span></td>
-                            <td>
-                                <button class="btn btn-icon"><i class="fas fa-edit"></i></button>
-                            </td>
+                            <td colspan="6" style="text-align:center;padding:30px;color:#999;"><i
+                                    class="fas fa-spinner fa-spin"></i> Đang tải...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -487,35 +471,47 @@
         </div>
     </main>
 
-    <!-- Add Modal -->
-    <div class="modal-overlay" id="addModal">
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="bankModal">
         <div class="modal-card">
-            <div class="modal-header">
-                <h2 style="font-size: 18px;">Thêm Ngân hàng</h2>
-                <i class="fas fa-times" style="cursor: pointer;" onclick="closeModal()"></i>
+            <div class="modal-header"
+                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h2 style="font-size: 18px;" id="modalTitle">Thêm Ngân hàng</h2>
+                <i class="fas fa-times" style="cursor: pointer; font-size:18px; color:#999;" onclick="closeModal()"></i>
             </div>
-            <form>
-                <div class="form-group">
-                    <label>Tên Ngân hàng / Ví</label>
-                    <input type="text" class="form-control" placeholder="Vietcombank, Momo, ...">
-                </div>
-                <div class="form-group">
-                    <label>Số tài khoản / SĐT</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>Chủ tài khoản</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label>QR Code URL (Tùy chọn)</label>
-                    <input type="text" class="form-control" placeholder="https://...">
-                </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                    <button type="button" class="btn" onclick="closeModal()">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Lưu lại</button>
-                </div>
-            </form>
+            <input type="hidden" id="editBankId">
+            <div class="form-group">
+                <label>Tên Ngân hàng / Ví</label>
+                <input type="text" class="form-control" id="fBankName" placeholder="Vietcombank, Momo, ACB...">
+            </div>
+            <div class="form-group">
+                <label>Mã ngân hàng (VietQR)</label>
+                <input type="text" class="form-control" id="fBankCode" placeholder="VCB, ACB, MB, MOMO...">
+            </div>
+            <div class="form-group">
+                <label>Số tài khoản / SĐT</label>
+                <input type="text" class="form-control" id="fAccountNumber">
+            </div>
+            <div class="form-group">
+                <label>Chủ tài khoản</label>
+                <input type="text" class="form-control" id="fAccountName">
+            </div>
+            <div class="form-group">
+                <label>QR Code URL (Tùy chọn)</label>
+                <input type="text" class="form-control" id="fQrUrl" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Trạng thái</label>
+                <select class="form-control" id="fStatus">
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Tắt</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button type="button" class="btn" onclick="closeModal()">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveBank()"><i class="fas fa-save"></i> Lưu
+                    lại</button>
+            </div>
         </div>
     </div>
 
@@ -524,8 +520,89 @@
             const wrapper = document.getElementById(id);
             wrapper.classList.toggle('active');
         }
-        function openModal() { document.getElementById('addModal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+
+        function openModal(bank) {
+            document.getElementById('editBankId').value = bank ? bank.id : '';
+            document.getElementById('modalTitle').textContent = bank ? 'Chỉnh sửa Ngân hàng' : 'Thêm Ngân hàng';
+            document.getElementById('fBankName').value = bank ? bank.bank_name : '';
+            document.getElementById('fBankCode').value = bank ? (bank.bank_code || '') : '';
+            document.getElementById('fAccountNumber').value = bank ? bank.account_number : '';
+            document.getElementById('fAccountName').value = bank ? bank.account_name : '';
+            document.getElementById('fQrUrl').value = bank ? (bank.qr_url || '') : '';
+            document.getElementById('fStatus').value = bank ? bank.status : 'active';
+            document.getElementById('bankModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('bankModal').style.display = 'none';
+        }
+
+        function saveBank() {
+            const id = document.getElementById('editBankId').value;
+            const payload = {
+                id: id || undefined,
+                bank_name: document.getElementById('fBankName').value.trim(),
+                bank_code: document.getElementById('fBankCode').value.trim(),
+                account_number: document.getElementById('fAccountNumber').value.trim(),
+                account_name: document.getElementById('fAccountName').value.trim(),
+                qr_url: document.getElementById('fQrUrl').value.trim(),
+                status: document.getElementById('fStatus').value
+            };
+            if (!payload.bank_name || !payload.account_number || !payload.account_name) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+                return;
+            }
+            const url = id ? '/admin/api/banks/update' : '/admin/api/banks/add';
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) { closeModal(); loadBanks(); }
+                    else alert('Lỗi: ' + data.error);
+                });
+        }
+
+        function deleteBank(id, name) {
+            if (!confirm(`Xóa ngân hàng "${name}"?`)) return;
+            fetch('/admin/api/banks/delete/' + id, { method: 'POST' })
+                .then(r => r.json())
+                .then(data => { if (data.success) loadBanks(); else alert(data.error); });
+        }
+
+        function loadBanks() {
+            fetch('/admin/api/banks')
+                .then(r => r.json())
+                .then(data => {
+                    const tbody = document.getElementById('banksBody');
+                    if (!data.success || !data.banks.length) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">Chưa có ngân hàng nào. Nhấn "Thêm tài khoản" để bắt đầu.</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = data.banks.map(b => `
+                        <tr>
+                            <td><i class="fas fa-university" style="font-size:22px;color:#1877F2;"></i></td>
+                            <td style="font-weight:600;">${b.bank_name}${b.bank_code ? ' <span style="font-size:11px;color:#999;">(' + b.bank_code + ')</span>' : ''}</td>
+                            <td style="font-family:monospace;">${b.account_number}</td>
+                            <td>${b.account_name}</td>
+                            <td><span class="badge ${b.status === 'active' ? 'badge-success' : 'badge-warning'}">${b.status === 'active' ? 'Hoạt động' : 'Tắt'}</span></td>
+                            <td>
+                                <div style="display:flex;gap:6px;">
+                                    <button class="btn btn-icon" title="Chỉnh sửa" onclick='openModal(${JSON.stringify(b)})'><i class="fas fa-edit"></i></button>
+                                    <button class="btn btn-icon" title="Xóa" style="color:#FA3E3E;" onclick="deleteBank(${b.id}, '${b.bank_name.replace(/'/g, "\\'")}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>`).join('');
+                })
+                .catch(() => {
+                    document.getElementById('banksBody').innerHTML =
+                        '<tr><td colspan="6" style="text-align:center;padding:30px;color:#FA3E3E;">Lỗi tải dữ liệu</td></tr>';
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadBanks);
     </script>
 </body>
 
