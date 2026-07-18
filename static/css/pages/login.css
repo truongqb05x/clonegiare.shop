@@ -15,7 +15,7 @@
 }
 
 body {
-    font-family: 'Outfit', sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: white;
     color: var(--text-main);
     min-height: 100vh;
@@ -55,9 +55,9 @@ body {
 }
 
 .brand-logo {
-    font-family: 'Outfit', sans-serif;
+    font-family: inherit;
     font-size: 28px;
-    font-weight: 800;
+    font-weight: 700;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -83,12 +83,12 @@ body {
 }
 
 .brand-content h1 {
-    font-family: 'Outfit', sans-serif;
+    font-family: inherit;
     font-size: 42px;
     line-height: 1.2;
     margin-bottom: 24px;
     color: #f8fafc;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .brand-content p {
@@ -187,16 +187,16 @@ body {
 }
 
 .form-header h2 {
-    font-family: 'Outfit', sans-serif;
-    font-size: 32px;
-    font-weight: 800;
+    font-family: inherit;
+    font-size: 28px;
+    font-weight: 600;
     color: var(--text-heading);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .form-header p {
     color: #64748b;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 .input-group {
@@ -206,12 +206,12 @@ body {
 
 .input-label {
     display: block;
-    font-size: 13px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: #94a3b8;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     transition: var(--transition);
 }
 
@@ -298,16 +298,16 @@ body {
 
 .btn-submit {
     width: 100%;
-    padding: 16px;
+    padding: 14px;
     background: var(--dark-color);
     color: white;
     border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 700;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .btn-submit:hover {
@@ -377,9 +377,9 @@ body {
 
 .footer-cta {
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     color: #64748b;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 /* Notification Modal Styles */
@@ -442,9 +442,9 @@ body {
 }
 
 .modal-title {
-    font-family: 'Outfit', sans-serif;
+    font-family: inherit;
     font-size: 24px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--text-heading);
     margin-bottom: 12px;
 }
@@ -476,6 +476,16 @@ body {
 }
 
 /* --- Responsive Design --- */
+@media (min-width: 1101px) {
+    .auth-brand {
+        display: none;
+    }
+
+    .auth-form-area {
+        flex: 1;
+    }
+}
+
 @media (max-width: 1100px) {
     .auth-brand {
         padding: 40px;

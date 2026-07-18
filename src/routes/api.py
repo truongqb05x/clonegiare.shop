@@ -1,5 +1,7 @@
-from flask import Blueprint, jsonify, session, request
+from flask import Blueprint, jsonify, session, request, make_response
+import requests
 from ..utils.db import get_db_connection
+from ..config import Config
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -24,20 +26,50 @@ def get_active_bank():
 
 @api_bp.route('/user/status', methods=['GET'])
 def user_status():
+    logged_in = False
+    user_data = None
+    
     if 'user_id' in session:
         conn = get_db_connection()
         if conn:
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("SELECT username, balance, role, fullname FROM users WHERE id = %s", (session['user_id'],))
-            user = cursor.fetchone()
-            cursor.close()
-            conn.close()
-            if user:
-                return jsonify({
-                    'logged_in': True,
-                    'user': user
-                })
-    return jsonify({'logged_in': False})
+            try:
+                cursor = conn.cursor(dictionary=True)
+                cursor.execute("SELECT username, balance, role, fullname FROM users WHERE id = %s", (session['user_id'],))
+                user = cursor.fetchone()
+                
+                if user:
+                    user_id = session['user_id']
+                    
+                    # Get Total Deposited
+                    cursor.execute("""
+                        SELECT COALESCE(SUM(amount), 0) as total 
+                        FROM deposits 
+                        WHERE user_id = %s AND status = 'completed'
+                    """, (user_id,))
+                    user['total_deposit'] = float(cursor.fetchone()['total'])
+                    
+                    # Get Total Used
+                    cursor.execute("""
+                        SELECT COALESCE(SUM(total_amount), 0) as total 
+                        FROM orders 
+                        WHERE user_id = %s
+                    """, (user_id,))
+                    user['total_used'] = float(cursor.fetchone()['total'])
+                    
+                    logged_in = True
+                    user_data = user
+                cursor.close()
+                conn.close()
+            except Exception:
+                if conn: conn.close()
+    
+    response_data = {'logged_in': logged_in}
+    if logged_in:
+        response_data['user'] = user_data
+        
+    response = make_response(jsonify(response_data))
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
 
 @api_bp.route('/user/profile', methods=['GET'])
 def get_user_profile():
@@ -250,10 +282,20 @@ def purchase():
         if stock_check['available'] < quantity:
             return jsonify({'success': False, 'error': f'Sản phẩm chỉ còn {stock_check["available"]} tài khoản'}), 400
         
-        # Generate order code
+        # Generate unique order code
         import random
         import string
-        order_code = 'ORD' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+        
+        order_code = None
+        for _ in range(5):  # Try up to 5 times
+            temp_code = 'ORD' + ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+            cursor.execute("SELECT id FROM orders WHERE order_code = %s", (temp_code,))
+            if not cursor.fetchone():
+                order_code = temp_code
+                break
+        
+        if not order_code:
+            return jsonify({'success': False, 'error': 'Không thể tạo mã đơn hàng. Vui lòng thử lại.'}), 500
         
         # Create order
         cursor.execute("""
@@ -531,7 +573,7 @@ def get_deposits():
         cursor.execute("""
             SELECT id, transaction_id, amount, method, status, created_at, is_notified
             FROM deposits 
-            WHERE user_id = %s 
+            WHERE user_id = %s AND status != 'pending'
             ORDER BY created_at DESC 
             LIMIT %s
         """, (user_id, limit))
@@ -545,11 +587,62 @@ def get_deposits():
         if conn: conn.close()
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@api_bp.route('/deposits/check-new', methods=['GET'])
-def check_new_deposit():
+import random
+import string
+
+@api_bp.route('/deposits/generate', methods=['POST'])
+def generate_deposit_code():
     if 'user_id' not in session:
         return jsonify({'success': False, 'error': 'Unauthorized'}), 401
     
+    user_id = session['user_id']
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({'success': False, 'error': 'Database connection failed'}), 500
+        
+    try:
+        cursor = conn.cursor()
+        
+        # Generate random 6-char code
+        code = None
+        for _ in range(5):
+            full_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+            
+            cursor.execute("SELECT id FROM deposits WHERE transaction_id = %s", (full_code,))
+            if not cursor.fetchone():
+                code = full_code
+                break
+                
+        if not code:
+            cursor.close()
+            conn.close()
+            return jsonify({'success': False, 'error': 'Không thể tạo mã, thử lại sau'}), 500
+            
+        # Insert pending request
+        cursor.execute("""
+            INSERT INTO deposits (user_id, amount, method, transaction_id, status)
+            VALUES (%s, 0, 'bank', %s, 'pending')
+        """, (user_id, code))
+        
+        conn.commit()
+        cursor.close()
+        conn.close()
+        
+        return jsonify({'success': True, 'code': code})
+        
+    except Exception as e:
+        if conn: conn.close()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@api_bp.route('/deposits/check-code', methods=['GET'])
+def check_deposit_code():
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+    
+    code = request.args.get('code')
+    if not code:
+        return jsonify({'success': False, 'error': 'Missing code'}), 400
+        
     user_id = session['user_id']
     
     conn = get_db_connection()
@@ -558,48 +651,157 @@ def check_new_deposit():
         
     try:
         cursor = conn.cursor(dictionary=True)
-        # Check for completed deposits that haven't been notified
         cursor.execute("""
-            SELECT id, amount, transaction_id, method, created_at
+            SELECT id, amount, transaction_id, method, created_at, status
             FROM deposits 
-            WHERE user_id = %s AND status = 'completed' AND is_notified = 0
-            ORDER BY created_at DESC 
-            LIMIT 1
-        """, (user_id,))
+            WHERE user_id = %s AND transaction_id = %s
+        """, (user_id, code))
         deposit = cursor.fetchone()
+        
+        if not deposit:
+            cursor.close()
+            conn.close()
+            return jsonify({'success': False, 'error': 'Deposit not found'}), 404
+            
+        if deposit['status'] == 'completed':
+            cursor.close()
+            conn.close()
+            return jsonify({'success': True, 'completed': True, 'amount': deposit['amount']})
+            
+        # Status is pending, call MBBank API
+        try:
+            mbbank_url = "http://api.dethihocphan.com/api/check-deposit"
+            print(f"[DEBUG AutoBank] Checking code: {code} at {mbbank_url}")
+            response = requests.get(mbbank_url, params={'description': code, 'minutes': 5}, timeout=10)
+            print(f"[DEBUG AutoBank] Status Code: {response.status_code}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                print(f"[DEBUG AutoBank] Response JSON: {data}")
+                
+                if data.get('result') and data.get('amount'):
+                    real_amount = float(data.get('amount'))
+                    print(f"[DEBUG AutoBank] Success! Updating amount: {real_amount}")
+                    
+                    # Calculate bonus
+                    bonus_percent = 0
+                    if real_amount >= 10000000:
+                        bonus_percent = 0.30
+                    elif real_amount >= 5000000:
+                        bonus_percent = 0.20
+                    elif real_amount >= 3000000:
+                        bonus_percent = 0.15
+                    elif real_amount >= 1000000:
+                        bonus_percent = 0.10
+                        
+                    bonus_amount = real_amount * bonus_percent
+                    total_credit = real_amount + bonus_amount
+                    
+                    # Update DB within a transaction
+                    cursor.execute("START TRANSACTION")
+                    
+                    # Lock user row
+                    cursor.execute("SELECT balance FROM users WHERE id = %s FOR UPDATE", (user_id,))
+                    user = cursor.fetchone()
+                    
+                    if user:
+                        # Update deposit
+                        cursor.execute("""
+                            UPDATE deposits 
+                            SET status = 'completed', amount = %s 
+                            WHERE id = %s AND status = 'pending'
+                        """, (real_amount, deposit['id']))
+                        
+                        # Update user balance
+                        cursor.execute("""
+                            UPDATE users 
+                            SET balance = balance + %s 
+                            WHERE id = %s
+                        """, (total_credit, user_id))
+                        
+                        conn.commit()
+                        cursor.close()
+                        conn.close()
+                        return jsonify({'success': True, 'completed': True, 'amount': total_credit})
+                    else:
+                        conn.rollback()
+        except Exception as e:
+            # MBBank API failed or timed out, just ignore and return pending
+            print(f"MBBank API Error: {e}")
+            pass
         
         cursor.close()
         conn.close()
         
-        if deposit:
-            # Return details for the modal
-            return jsonify({'success': True, 'new_deposit': True, 'deposit': deposit})
-        else:
-            return jsonify({'success': True, 'new_deposit': False})
+        return jsonify({'success': True, 'completed': False})
             
     except Exception as e:
         if conn: conn.close()
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@api_bp.route('/deposits/mark-seen', methods=['POST'])
-def mark_deposit_seen():
-    if 'user_id' not in session:
-        return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+@api_bp.route('/test-deposit', methods=['GET'])
+def test_deposit():
+    """Manual endpoint for testing deposit auto-bank"""
+    code = request.args.get('code')
+    amount_str = request.args.get('amount', '50000')
+    if not code:
+        return jsonify({'error': 'Missing code parameter (e.g. ?code=CLONEGIARE ABC)'}), 400
         
-    data = request.get_json()
-    deposit_id = data.get('deposit_id')
-    
-    if not deposit_id:
-        return jsonify({'success': False, 'error': 'Missing deposit_id'}), 400
-        
-    conn = get_db_connection()
+    conn = None
     try:
-        cursor = conn.cursor()
-        cursor.execute("UPDATE deposits SET is_notified = 1 WHERE id = %s AND user_id = %s", (deposit_id, session['user_id']))
-        conn.commit()
+        real_amount = float(amount_str)
+        conn = get_db_connection()
+        if not conn:
+            return jsonify({'error': 'DB Error'}), 500
+            
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT id, user_id, status FROM deposits WHERE transaction_id = %s", (code,))
+        deposit = cursor.fetchone()
+        
+        if not deposit:
+            cursor.close()
+            conn.close()
+            return jsonify({'error': 'Deposit not found'}), 404
+            
+        if deposit['status'] == 'completed':
+            cursor.close()
+            conn.close()
+            return jsonify({'message': 'Deposit is already completed'})
+            
+        # Complete it
+        user_id = deposit['user_id']
+        
+        # Calculate bonus
+        bonus_percent = 0
+        if real_amount >= 10000000:
+            bonus_percent = 0.30
+        elif real_amount >= 5000000:
+            bonus_percent = 0.20
+        elif real_amount >= 3000000:
+            bonus_percent = 0.15
+        elif real_amount >= 1000000:
+            bonus_percent = 0.10
+            
+        bonus_amount = real_amount * bonus_percent
+        total_credit = real_amount + bonus_amount
+        
+        cursor.execute("START TRANSACTION")
+        cursor.execute("SELECT balance FROM users WHERE id = %s FOR UPDATE", (user_id,))
+        user = cursor.fetchone()
+        
+        if user:
+            cursor.execute("UPDATE deposits SET status = 'completed', amount = %s WHERE id = %s", (real_amount, deposit['id']))
+            cursor.execute("UPDATE users SET balance = balance + %s WHERE id = %s", (total_credit, user_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return jsonify({'success': True, 'message': f'Thành công! Đã cộng {total_credit} cho user {user_id} qua mã {code}'})
+            
+        conn.rollback()
         cursor.close()
         conn.close()
-        return jsonify({'success': True})
+        return jsonify({'error': 'User not found'}), 404
+        
     except Exception as e:
-        if conn: conn.close()
-        return jsonify({'success': False, 'error': str(e)}), 500
+        if conn: conn.rollback(); conn.close()
+        return jsonify({'error': str(e)}), 500

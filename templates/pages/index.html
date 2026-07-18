@@ -9,29 +9,29 @@
     <meta name="keywords" content="{{ seo.keywords }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ seo.url }}">
-
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ seo.url }}">
     <meta property="og:title" content="{{ seo.title }}">
     <meta property="og:description" content="{{ seo.description }}">
     <meta property="og:image" content="{{ seo.image }}">
+    <link rel="shortcut icon" href="../../static/img/logo.png" type="image/x-icon">
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://fbstore.com/">
-    <meta property="twitter:title" content="FBStore - Shop Bán Acc Facebook, Via, Clone, BM Chất Lượng Số 1">
+    <meta property="twitter:url" content="https://clonegiare.shop/">
+    <meta property="twitter:title" content="Clonegiare.shop - Shop Bán Acc Facebook, Via, Clone, BM Chất Lượng Số 1">
     <meta property="twitter:description"
         content="Hệ thống cung cấp tài khoản Facebook uy tín, chất lượng. Bảo hành 1 đổi 1, hỗ trợ 24/7.">
-    <meta property="twitter:image" content="https://fbstore.com/og-image.jpg">
+    <meta property="twitter:image" content="https://clonegiare.shop/og-image.jpg">
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "FBStore",
-      "url": "https://fbstore.com",
-      "logo": "https://fbstore.com/logo.png",
+      "name": "Clonegiare.shop",
+      "url": "https://clonegiare.shop",
+      "logo": "https://clonegiare.shop/logo.png",
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+84-xxx-xxx-xxx",
@@ -43,11 +43,11 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "FBStore",
-      "url": "https://fbstore.com",
+      "name": "Clonegiare.shop",
+      "url": "https://clonegiare.shop",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://fbstore.com/?s={search_term_string}",
+        "target": "https://clonegiare.shop/?s={search_term_string}",
         "query-input": "required name=search_term_string"
       }
     }
@@ -66,7 +66,7 @@
             <div class="header-top">
                 <a href="/" class="logo">
                     <i class="fab fa-facebook-square"></i>
-                    <span>FB</span>Store
+                    <span>Clonegiare</span>.shop
                 </a>
 
                 <div class="header-actions">
@@ -101,19 +101,88 @@
                 </div>
             </div>
 
-            <nav>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="#/" class="active" onclick="navigate('#/', event)">Trang chủ</a></li>
-                </ul>
-            </nav>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="container">
-        <h1 class="visually-hidden">FBStore - Hệ thống cung cấp tài khoản Facebook, Via, Clone uy tín số 1 Việt Nam</h1>
-        <div id="productList">
-            <!-- Dữ liệu sản phẩm theo danh mục sẽ được tải vào đây -->
+        <h1 class="visually-hidden">Clonegiare.shop - Hệ thống cung cấp tài khoản Facebook, Via, Clone uy tín số 1 Việt Nam</h1>
+
+        <div class="system-announcement">
+            <div class="announcement-content">
+                <p class="text-danger"><strong>Lưu ý:</strong> Hãy đảm bảo tài khoản đăng nhập và mật khẩu của bạn không
+                    khớp với thông tin đăng nhập trên các website khác để tránh trường hợp chủ website khác sử dụng
+                    thông tin của bạn để đăng nhập vào website này!</p>
+                <p class="text-danger"><strong>Lưu ý:</strong> WEBSITE không hoàn tiền lại với bất kỳ lý do gì nên mọi
+                    người nạp tiền đủ xài thôi nhé (hết lại nạp do auto nạp tiền chỉ mất có 30s)</p>
+                <p class="text-danger"><strong>Lưu ý:</strong> Nếu bạn nạp tiền sau 10p chưa cộng hãy báo ngay với admin
+                    để được hỗ trợ !</p>
+
+                <p class="text-primary mt-3"><strong><a href="#">Cách Đăng Nhập Tài Khoản Xu Đã Mua</a> — <a
+                            href="#">Điều Khoản Sử Dụng</a></strong> (vui lòng đọc trước khi mua, không đọc có vấn đề gì
+                    không giải quyết !)</p>
+
+                <h3 class="text-zalo mt-3">Mọi thắc mắc xin vui lòng liên hệ qua <a href="https://zalo.me/0866005531"
+                        target="_blank">zalo (0866005531)</a></h3>
+
+                <p class="text-warning mt-2"><em>Đại lý nào cần xu TTC chuyển hoặc acc có số xu lớn hoặc acc xu trên web
+                        mà mua với số lượng lớn thì inbox qua ZALO để trao đổi nhé.</em></p>
+            </div>
+        </div>
+
+        <div class="main-layout">
+            <div class="layout-left">
+                <nav style="margin-bottom: 20px;">
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="#/" class="active" onclick="navigate('#/', event)">Tất cả sản phẩm</a></li>
+                    </ul>
+                </nav>
+                <div id="productList">
+                    <!-- Dữ liệu sản phẩm theo danh mục sẽ được tải vào đây -->
+                </div>
+            </div>
+
+            <div class="layout-right">
+                <div class="user-sidebar auth-required" id="userSidebar" style="display: none; flex-direction: column;">
+                    <div class="sidebar-header">
+                        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+                        <div class="sidebar-user-info">
+                            <div class="sidebar-greeting">Xin chào,</div>
+                            <div class="sidebar-username" id="sidebarUsername">Người dùng</div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-balance-box">
+                        <div class="sidebar-label">Số dư hiện tại</div>
+                        <div class="sidebar-value highlight-blue" id="sidebarBalance">0đ</div>
+                        <a href="/deposit" class="btn btn-deposit-sidebar">Nạp tiền ngay</a>
+                    </div>
+
+                    <div class="sidebar-stats">
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-label">Tổng tiền nạp</div>
+                                <div class="stat-value" id="sidebarTotalDeposit">0đ</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-label">Đã sử dụng</div>
+                                <div class="stat-value" id="sidebarUsedBalance">0đ</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon"><i class="fas fa-tags"></i></div>
+                            <div class="stat-content">
+                                <div class="stat-label">Giảm giá</div>
+                                <div class="stat-value" id="sidebarDiscount">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -391,6 +460,7 @@
         }
     </style>
 
-<script src="../../static/js/index.js"></script>
+    <script src="/static/js/index.js"></script>
 </body>
+
 </html>

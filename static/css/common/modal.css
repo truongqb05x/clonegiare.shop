@@ -52,9 +52,7 @@
 .modal-icon {
     font-size: 50px;
     margin-bottom: 15px;
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--secondary-color);
 }
 
 .modal-body {

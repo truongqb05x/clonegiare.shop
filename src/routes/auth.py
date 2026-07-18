@@ -29,7 +29,7 @@ def login():
                     return jsonify({'success': False, 'message': 'Tài khoản của bạn đã bị khóa.'}), 403
                 
                 
-                session.permanent = True  # Enable 30-day session
+                session.permanent = True  # Enable eternal session (1 year as per config)
                 session['user_id'] = user['id']
                 session['username'] = user['username']
                 session['role'] = user['role']

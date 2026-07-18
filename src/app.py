@@ -6,14 +6,24 @@ from .config import Config
 from .routes.auth import auth_bp
 from .routes.api import api_bp
 from .routes.admin import admin_bp
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 app = Flask(__name__, template_folder='../templates', static_folder='../static')
 app.config.from_object(Config)
+
+# Apply ProxyFix for production environments
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 
 # Register Blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(api_bp)
 app.register_blueprint(admin_bp)
+
+@app.before_request
+def enforce_https():
+    if not request.is_secure and Config.SESSION_COOKIE_SECURE:
+        url = request.url.replace("http://", "https://", 1)
+        return redirect(url, code=301)
 
 @app.route('/')
 @app.route('/category/<slug>')
@@ -45,7 +55,9 @@ def index(slug=None):
             except Exception as e:
                 print(f"SEO Error: {e}")
                 
-    return render_template('pages/index.html', seo=seo_data)
+    response = make_response(render_template('pages/index.html', seo=seo_data))
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    return response
 
 # Public pages
 @app.route('/api')
