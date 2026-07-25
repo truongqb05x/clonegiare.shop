@@ -105,6 +105,26 @@ async function checkAuth() {
         } else {
             currentUser = null;
             authElements.forEach(el => el.style.display = 'none');
+            // When not logged in, reset sidebar values if it is visible
+            if (document.getElementById('sidebarAvatar')) {
+                document.getElementById('sidebarAvatar').innerText = '?';
+            }
+            if (document.getElementById('sidebarUsername')) {
+                document.getElementById('sidebarUsername').innerText = 'Khách';
+            }
+            if (document.getElementById('sidebarBalance')) {
+                document.getElementById('sidebarBalance').textContent = '0đ';
+            }
+            if (document.getElementById('sidebarTotalDeposit')) {
+                document.getElementById('sidebarTotalDeposit').textContent = '0đ';
+            }
+            if (document.getElementById('sidebarUsedBalance')) {
+                document.getElementById('sidebarUsedBalance').textContent = '0đ';
+            }
+            if (document.getElementById('sidebarDiscount')) {
+                document.getElementById('sidebarDiscount').textContent = '0%';
+            }
+            
             userAvatar.innerHTML = '<i class="fas fa-user"></i>';
             userAvatar.style.background = '#65676B';
         }

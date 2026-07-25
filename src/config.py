@@ -13,11 +13,15 @@ class Config:
     }
     
     # Session Configuration
-    SESSION_TYPE = 'filesystem'
     SESSION_PERMANENT = True
     PERMANENT_SESSION_LIFETIME = 31536000  # 1 year in seconds
     SESSION_REFRESH_EACH_REQUEST = True
-    SESSION_COOKIE_SECURE = False   # Set to True for production with HTTPS
+    SESSION_COOKIE_SECURE = False   # Set to True if using HTTPS
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
     SESSION_COOKIE_PATH = '/'
+    # Explicitly set domain in production (.env: COOKIE_DOMAIN=.clonegiare.shop)
+    # If not set (like in local dev), it defaults to None and works on 127.0.0.1
+    _cookie_domain = os.environ.get('COOKIE_DOMAIN')
+    if _cookie_domain:
+        SESSION_COOKIE_DOMAIN = _cookie_domain

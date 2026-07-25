@@ -1,3 +1,91 @@
+/* --- Topbar --- */
+.site-topbar {
+    background: linear-gradient(90deg, #1877F2, #005af0);
+    color: #ffffff;
+    font-size: 13px;
+    font-family: 'Outfit', sans-serif;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.topbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    min-height: 36px;
+}
+
+.topbar-left {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.topbar-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.topbar-item:hover {
+    opacity: 0.8;
+}
+
+.topbar-item i {
+    font-size: 14px;
+}
+
+.dropdown-icon {
+    font-size: 10px !important;
+    margin-left: 2px;
+}
+
+.topbar-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.topbar-links a {
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.topbar-links a:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .topbar-container {
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px 15px;
+    }
+    
+    .topbar-left {
+        text-align: center;
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .topbar-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+}
+
 /* --- Header & Navigation --- */
 header {
     background-color: white;
