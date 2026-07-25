@@ -244,7 +244,10 @@ def purchase():
     
     data = request.get_json()
     product_id = data.get('product_id')
-    quantity = data.get('quantity', 1)
+    try:
+        quantity = int(data.get('quantity', 1))
+    except (ValueError, TypeError):
+        return jsonify({'success': False, 'error': 'Số lượng không hợp lệ'}), 400
     
     if not product_id or quantity < 1:
         return jsonify({'success': False, 'error': 'Thông tin không hợp lệ'}), 400
@@ -255,12 +258,14 @@ def purchase():
     
     try:
         cursor = conn.cursor(dictionary=True)
+        cursor.execute("START TRANSACTION")
         user_id = session['user_id']
         
-        # Get user balance
-        cursor.execute("SELECT balance FROM users WHERE id = %s", (user_id,))
+        # Get user balance and lock the row
+        cursor.execute("SELECT balance FROM users WHERE id = %s FOR UPDATE", (user_id,))
         user = cursor.fetchone()
         if not user:
+            conn.rollback()
             return jsonify({'success': False, 'error': 'Không tìm thấy thông tin người dùng'}), 404
         
         # Get product info
@@ -276,10 +281,11 @@ def purchase():
         if float(user['balance']) < total_amount:
             return jsonify({'success': False, 'error': f'Số dư không đủ. Bạn cần thêm {int(total_amount - float(user["balance"])):,}đ'}), 400
         
-        # Check stock
+        # Check stock (we will lock the exact accounts later)
         cursor.execute("SELECT COUNT(*) as available FROM accounts WHERE product_id = %s AND status = 'live'", (product_id,))
         stock_check = cursor.fetchone()
         if stock_check['available'] < quantity:
+            conn.rollback()
             return jsonify({'success': False, 'error': f'Sản phẩm chỉ còn {stock_check["available"]} tài khoản'}), 400
         
         # Generate unique order code
@@ -304,13 +310,17 @@ def purchase():
         """, (order_code, user_id, product['name'], total_amount, quantity))
         order_id = cursor.lastrowid
         
-        # Get accounts from inventory
+        # Get accounts from inventory and lock them
         cursor.execute("""
             SELECT id, content FROM accounts 
             WHERE product_id = %s AND status = 'live' 
-            LIMIT %s
+            LIMIT %s FOR UPDATE
         """, (product_id, quantity))
         accounts = cursor.fetchall()
+        
+        if len(accounts) < quantity:
+            conn.rollback()
+            return jsonify({'success': False, 'error': 'Số lượng tài khoản khả dụng không đủ, vui lòng thử lại'}), 400
         
         # Mark accounts as sold and link to order
         account_data = []
@@ -712,17 +722,26 @@ def check_deposit_code():
                             WHERE id = %s AND status = 'pending'
                         """, (real_amount, deposit['id']))
                         
-                        # Update user balance
-                        cursor.execute("""
-                            UPDATE users 
-                            SET balance = balance + %s 
-                            WHERE id = %s
-                        """, (total_credit, user_id))
-                        
-                        conn.commit()
-                        cursor.close()
-                        conn.close()
-                        return jsonify({'success': True, 'completed': True, 'amount': total_credit})
+                        if cursor.rowcount > 0:
+                            # Update user balance
+                            cursor.execute("""
+                                UPDATE users 
+                                SET balance = balance + %s 
+                                WHERE id = %s
+                            """, (total_credit, user_id))
+                            
+                            # Log balance change
+                            cursor.execute("""
+                                INSERT INTO balance_history (user_id, amount_before, amount_change, amount_after, type, description)
+                                VALUES (%s, %s, %s, %s, 'deposit', %s)
+                            """, (user_id, user['balance'], total_credit, float(user['balance']) + total_credit, f'Nạp tiền tự động: {code}'))
+                            
+                            conn.commit()
+                            cursor.close()
+                            conn.close()
+                            return jsonify({'success': True, 'completed': True, 'amount': total_credit})
+                        else:
+                            conn.rollback()
                     else:
                         conn.rollback()
         except Exception as e:
@@ -738,70 +757,3 @@ def check_deposit_code():
     except Exception as e:
         if conn: conn.close()
         return jsonify({'success': False, 'error': str(e)}), 500
-
-@api_bp.route('/test-deposit', methods=['GET'])
-def test_deposit():
-    """Manual endpoint for testing deposit auto-bank"""
-    code = request.args.get('code')
-    amount_str = request.args.get('amount', '50000')
-    if not code:
-        return jsonify({'error': 'Missing code parameter (e.g. ?code=CLONEGIARE ABC)'}), 400
-        
-    conn = None
-    try:
-        real_amount = float(amount_str)
-        conn = get_db_connection()
-        if not conn:
-            return jsonify({'error': 'DB Error'}), 500
-            
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id, user_id, status FROM deposits WHERE transaction_id = %s", (code,))
-        deposit = cursor.fetchone()
-        
-        if not deposit:
-            cursor.close()
-            conn.close()
-            return jsonify({'error': 'Deposit not found'}), 404
-            
-        if deposit['status'] == 'completed':
-            cursor.close()
-            conn.close()
-            return jsonify({'message': 'Deposit is already completed'})
-            
-        # Complete it
-        user_id = deposit['user_id']
-        
-        # Calculate bonus
-        bonus_percent = 0
-        if real_amount >= 10000000:
-            bonus_percent = 0.30
-        elif real_amount >= 5000000:
-            bonus_percent = 0.20
-        elif real_amount >= 3000000:
-            bonus_percent = 0.15
-        elif real_amount >= 1000000:
-            bonus_percent = 0.10
-            
-        bonus_amount = real_amount * bonus_percent
-        total_credit = real_amount + bonus_amount
-        
-        cursor.execute("START TRANSACTION")
-        cursor.execute("SELECT balance FROM users WHERE id = %s FOR UPDATE", (user_id,))
-        user = cursor.fetchone()
-        
-        if user:
-            cursor.execute("UPDATE deposits SET status = 'completed', amount = %s WHERE id = %s", (real_amount, deposit['id']))
-            cursor.execute("UPDATE users SET balance = balance + %s WHERE id = %s", (total_credit, user_id))
-            conn.commit()
-            cursor.close()
-            conn.close()
-            return jsonify({'success': True, 'message': f'Thành công! Đã cộng {total_credit} cho user {user_id} qua mã {code}'})
-            
-        conn.rollback()
-        cursor.close()
-        conn.close()
-        return jsonify({'error': 'User not found'}), 404
-        
-    except Exception as e:
-        if conn: conn.rollback(); conn.close()
-        return jsonify({'error': str(e)}), 500

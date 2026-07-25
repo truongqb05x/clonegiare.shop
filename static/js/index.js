@@ -250,7 +250,10 @@ async function renderProducts(path = '/') {
                                             <div class="product-actions">
                                                 <div class="product-price">${parseFloat(p.price).toLocaleString('vi-VN')}đ</div>
                                                 <div class="product-btn-group">
-                                                    <button class="btn btn-buy" onclick="openCheckoutFromData(${p.id}, '${p.name}', '${parseFloat(p.price).toLocaleString('vi-VN')}đ', '${p.description}')"><i class="fas fa-shopping-cart"></i> MUA</button>
+                                                    ${p.stock <= 0 
+                                                        ? `<button class="btn btn-buy" disabled style="background: #9ca3af; cursor: not-allowed; box-shadow: none; pointer-events: none;"><i class="fas fa-ban"></i> HẾT HÀNG</button>` 
+                                                        : `<button class="btn btn-buy" onclick="openCheckoutFromData(${p.id}, '${p.name}', '${parseFloat(p.price).toLocaleString('vi-VN')}đ', '${p.description}')"><i class="fas fa-shopping-cart"></i> MUA</button>`
+                                                    }
                                                     <button class="btn btn-detail" onclick="openImageModal('${p.image_url}', '${p.name}')">Chi tiết</button>
                                                 </div>
                                             </div>
@@ -263,20 +266,11 @@ async function renderProducts(path = '/') {
             container.innerHTML += sectionHtml;
         });
 
-        if (isFirstLoad) {
-            showInitialAnnouncement();
-            isFirstLoad = false;
-        }
 
     } catch (error) {
         console.error('Render Error:', error);
         container.innerHTML = '<p>Lỗi khi tải dữ liệu. Vui lòng thử lại sau.</p>';
     }
-}
-
-function showInitialAnnouncement() {
-    document.getElementById('announcementModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
 }
 
 function navigate(path, event) {
@@ -419,8 +413,10 @@ function manualQuantityInput(input) {
     let val = parseInt(input.value);
     if (isNaN(val) || val < 1) {
         quantity = 1;
+        input.value = 1;
     } else {
         quantity = val;
+        input.value = val;
     }
     updateTotal();
 }
@@ -432,6 +428,17 @@ async function checkout() {
         showNotify('error', 'Lỗi', 'Không tìm thấy thông tin sản phẩm');
         return;
     }
+    
+    // Strict validation before sending to API
+    let finalQuantity = parseInt(document.getElementById('quantityInput').value);
+    if (isNaN(finalQuantity) || finalQuantity < 1) {
+        showNotify('error', 'Lỗi', 'Số lượng không hợp lệ');
+        document.getElementById('quantityInput').value = 1;
+        quantity = 1;
+        updateTotal();
+        return;
+    }
+    quantity = finalQuantity;
 
     const btn = document.querySelector('#checkoutModal .btn-checkout');
     const originalText = btn.innerHTML;
@@ -545,11 +552,6 @@ function closePurchaseModal() {
     }
 }
 
-function closeAnnouncement() {
-    document.getElementById('announcementModal').classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
 window.onload = async function () {
     await checkAuth();
     await renderNavMenu();
@@ -560,7 +562,6 @@ window.onload = async function () {
 // Close modal when clicking outside
 window.onclick = function (event) {
     const checkoutModal = document.getElementById('checkoutModal');
-    const announcementModal = document.getElementById('announcementModal');
     const userDropdown = document.getElementById('userDropdown');
     const userAvatar = document.getElementById('userAvatar');
     const toolsDropdown = document.getElementById('toolsDropdown');
@@ -570,9 +571,6 @@ window.onclick = function (event) {
 
     if (event.target == checkoutModal) {
         closeCheckout();
-    }
-    if (event.target == announcementModal) {
-        closeAnnouncement();
     }
     if (userDropdown && userDropdown.classList.contains('active') && !userAvatar.contains(event.target)) {
         userDropdown.classList.remove('active');

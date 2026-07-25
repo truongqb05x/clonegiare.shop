@@ -229,19 +229,23 @@ header {
 
 /* Nav Menu */
 nav {
-    padding: 10px 0;
-    background-color: white;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 10px;
+    padding: 0;
+    background-color: transparent;
+    border-bottom: 1px solid #eaeaea;
+    margin-bottom: 25px;
+    position: sticky;
+    top: 60px; /* Adjust if you have fixed header */
+    z-index: 10;
 }
 
 .nav-menu {
     display: flex;
     list-style: none;
-    gap: 12px;
+    gap: 24px;
     overflow-x: auto;
     scrollbar-width: none;
-    padding: 5px 0;
+    padding: 0;
+    margin: 0;
 }
 
 .nav-menu::-webkit-scrollbar {
@@ -249,28 +253,26 @@ nav {
 }
 
 .nav-menu a {
-    font-weight: 500;
+    font-weight: 600;
     color: #65676b;
-    padding: 8px 16px;
+    padding: 12px 4px;
     display: flex;
     align-items: center;
     gap: 8px;
     transition: all 0.2s ease;
-    background-color: #f0f2f5;
-    border-radius: 20px;
-    font-size: 14px;
+    background-color: transparent;
+    font-size: 15px;
     white-space: nowrap;
+    border-bottom: 3px solid transparent;
 }
 
 .nav-menu a:hover {
-    background-color: #e4e6eb;
-    color: #1c1e21;
+    color: #1877F2;
 }
 
 .nav-menu a.active {
-    background: linear-gradient(135deg, #1877F2 0%, #42B72A 100%);
-    color: white;
-    box-shadow: 0 4px 10px rgba(24, 119, 242, 0.2);
+    color: #1877F2;
+    border-bottom-color: #1877F2;
 }
 
 @media (max-width: 600px) {

@@ -992,55 +992,6 @@ main section {
     }
 }
 
-/* Simplified Announcement Modal */
-#announcementModal .modal-content {
-    max-width: 450px;
-    padding: 0;
-    border-radius: 12px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-}
-
-.announcement-header {
-    background: linear-gradient(135deg, #1877F2 0%, #42B72A 100%);
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
-
-.announcement-header h2 {
-    margin: 0;
-    font-size: 20px;
-}
-
-.announcement-body {
-    padding: 30px;
-    text-align: center;
-    background: white;
-}
-
-.announcement-body p {
-    font-size: 15px;
-    color: #4b4f56;
-    line-height: 1.6;
-    margin-bottom: 25px;
-}
-
-.btn-announcement {
-    background-color: #1877F2;
-    color: white;
-    border: none;
-    padding: 12px 40px;
-    border-radius: 6px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.btn-announcement:hover {
-    background-color: #166fe5;
-}
 
 @media (max-width: 850px) {
     .announcement-content {
