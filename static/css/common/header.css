@@ -112,6 +112,10 @@ header {
     color: var(--primary-color);
 }
 
+.logo span {
+    color: var(--secondary-color);
+}
+
 .header-actions {
     display: flex;
     align-items: center;

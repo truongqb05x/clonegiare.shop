@@ -375,6 +375,8 @@ def get_orders():
     date_from = request.args.get('date_from', '')
     date_to = request.args.get('date_to', '')
     limit = int(request.args.get('limit', 10))
+    page = int(request.args.get('page', 1))
+    offset = (page - 1) * limit
     
     conn = get_db_connection()
     if not conn:
@@ -383,6 +385,12 @@ def get_orders():
     try:
         cursor = conn.cursor(dictionary=True)
         
+        count_query = """
+            SELECT COUNT(*) as total
+            FROM orders 
+            WHERE user_id = %s
+        """
+        
         query = """
             SELECT order_code, product_name, quantity, total_amount, 
                    note, created_at 
@@ -390,21 +398,32 @@ def get_orders():
             WHERE user_id = %s
         """
         params = [user_id]
+        count_params = [user_id]
         
         if order_code:
             query += " AND order_code LIKE %s"
+            count_query += " AND order_code LIKE %s"
             params.append(f'%{order_code}%')
+            count_params.append(f'%{order_code}%')
         
         if date_from:
             query += " AND DATE(created_at) >= %s"
+            count_query += " AND DATE(created_at) >= %s"
             params.append(date_from)
+            count_params.append(date_from)
         
         if date_to:
             query += " AND DATE(created_at) <= %s"
+            count_query += " AND DATE(created_at) <= %s"
             params.append(date_to)
+            count_params.append(date_to)
+            
+        cursor.execute(count_query, count_params)
+        total_records = cursor.fetchone()['total']
+        total_pages = (total_records + limit - 1) // limit if limit > 0 else 1
         
-        query += " ORDER BY created_at DESC LIMIT %s"
-        params.append(limit)
+        query += " ORDER BY created_at DESC LIMIT %s OFFSET %s"
+        params.extend([limit, offset])
         
         cursor.execute(query, params)
         orders = cursor.fetchall()
@@ -412,7 +431,7 @@ def get_orders():
         cursor.close()
         conn.close()
         
-        return jsonify({'success': True, 'orders': orders})
+        return jsonify({'success': True, 'orders': orders, 'total_pages': total_pages, 'current_page': page})
     except Exception as e:
         cursor.close()
         conn.close()
@@ -524,7 +543,9 @@ def get_balance_history():
         return jsonify({'success': False, 'error': 'Unauthorized'}), 401
     
     user_id = session['user_id']
-    limit = int(request.args.get('limit', 20))
+    limit = int(request.args.get('limit', 10))
+    page = int(request.args.get('page', 1))
+    offset = (page - 1) * limit
     description = request.args.get('description', '')
     date = request.args.get('date', '')
     
@@ -535,6 +556,12 @@ def get_balance_history():
     try:
         cursor = conn.cursor(dictionary=True)
         
+        count_query = """
+            SELECT COUNT(*) as total 
+            FROM balance_history 
+            WHERE user_id = %s
+        """
+        
         query = """
             SELECT type, amount_before, amount_change, amount_after, 
                    description, created_at 
@@ -542,17 +569,26 @@ def get_balance_history():
             WHERE user_id = %s 
         """
         params = [user_id]
+        count_params = [user_id]
         
         if description:
             query += " AND description LIKE %s"
+            count_query += " AND description LIKE %s"
             params.append(f'%{description}%')
+            count_params.append(f'%{description}%')
             
         if date:
             query += " AND DATE(created_at) = %s"
+            count_query += " AND DATE(created_at) = %s"
             params.append(date)
+            count_params.append(date)
             
-        query += " ORDER BY created_at DESC LIMIT %s"
-        params.append(limit)
+        cursor.execute(count_query, count_params)
+        total_records = cursor.fetchone()['total']
+        total_pages = (total_records + limit - 1) // limit if limit > 0 else 1
+        
+        query += " ORDER BY created_at DESC LIMIT %s OFFSET %s"
+        params.extend([limit, offset])
         
         cursor.execute(query, params)
         history = cursor.fetchall()
@@ -560,7 +596,7 @@ def get_balance_history():
         cursor.close()
         conn.close()
         
-        return jsonify({'success': True, 'history': history})
+        return jsonify({'success': True, 'history': history, 'total_pages': total_pages, 'current_page': page})
     except Exception as e:
         cursor.close()
         conn.close()

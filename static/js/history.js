@@ -51,6 +51,8 @@ window.onclick = function (event) {
 
 // API Integration
 let currentUser = null;
+let currentOrderPage = 1;
+let currentBalancePage = 1;
 
 async function loadUserInfo() {
     try {
@@ -76,13 +78,15 @@ async function loadOrders(filters = {}) {
     try {
         const params = new URLSearchParams(filters);
         // Set default limit if not present
-        if (!params.has('limit')) params.append('limit', '50');
+        if (!params.has('limit')) params.append('limit', '10');
+        if (!params.has('page')) params.append('page', currentOrderPage);
 
         const response = await fetch(`/api/orders?${params.toString()}`);
         const data = await response.json();
 
         if (data.success) {
             renderOrdersTable(data.orders);
+            renderPagination('order-pagination', data.current_page, data.total_pages, 'goToOrderPage');
         }
     } catch (error) {
         console.error('Error loading orders:', error);
@@ -167,13 +171,15 @@ function renderActivityTable(logs) {
 async function loadBalanceHistory(filters = {}) {
     try {
         const params = new URLSearchParams(filters);
-        if (!params.has('limit')) params.append('limit', '20');
+        if (!params.has('limit')) params.append('limit', '10');
+        if (!params.has('page')) params.append('page', currentBalancePage);
 
         const response = await fetch(`/api/balance-history?${params.toString()}`);
         const data = await response.json();
 
         if (data.success) {
             renderBalanceTable(data.history);
+            renderPagination('balance-pagination', data.current_page, data.total_pages, 'goToBalancePage');
         }
     } catch (error) {
         console.error('Error loading balance history:', error);
@@ -214,23 +220,13 @@ function renderBalanceTable(history) {
 }
 
 // Filter Handlers
-function handleSearch(type) {
+function handleSearch(type, resetPage = true) {
     if (type === 'orders') {
+        if (resetPage) currentOrderPage = 1;
         const filters = {
             order_code: document.getElementById('order-code-filter').value,
-            date_from: document.getElementById('order-date-filter').value, // Use date_from for date filter for now or update API to specific date
-            limit: document.getElementById('order-limit').value
+            date_from: document.getElementById('order-date-filter').value
         };
-        // If API expects 'date' for exact match, use that. Checking API...
-        // API orders uses date_from/date_to. API logs/balance uses 'date' (exact).
-        // Let's stick to simple date filter for now.
-        // For orders, let's map the single date input to date_from for simplicity or exact? 
-        // The UI says "Chọn thời gian", usually implies a specific date. 
-        // Let's pass it as date_from and date_to (same day range) if we want exact day, 
-        // OR just update the order API to support 'date' exact match too?
-        // The previous API code for orders supports date_from and date_to.
-        // Let's just use date_from for now as a "Since" filter or maybe exact match is better?
-        // Adjusting: Let's assume user wants to see orders ON that day.
         if (filters.date_from) {
             filters.date_to = filters.date_from;
         }
@@ -243,6 +239,7 @@ function handleSearch(type) {
         };
         loadActivityLogs(filters);
     } else if (type === 'balance') {
+        if (resetPage) currentBalancePage = 1;
         const filters = {
             description: document.getElementById('balance-desc-filter').value,
             date: document.getElementById('balance-date-filter').value
@@ -255,8 +252,8 @@ function clearFilter(type) {
     if (type === 'orders') {
         document.getElementById('order-code-filter').value = '';
         document.getElementById('order-date-filter').value = '';
-        document.getElementById('order-limit').value = '50';
-        loadOrders({ limit: 50 });
+        currentOrderPage = 1;
+        loadOrders();
     } else if (type === 'logs') {
         document.getElementById('log-action-filter').value = '';
         document.getElementById('log-ip-filter').value = '';
@@ -265,6 +262,7 @@ function clearFilter(type) {
     } else if (type === 'balance') {
         document.getElementById('balance-desc-filter').value = '';
         document.getElementById('balance-date-filter').value = '';
+        currentBalancePage = 1;
         loadBalanceHistory();
     }
 }
@@ -296,3 +294,63 @@ window.onload = async function () {
     await loadActivityLogs();
     await loadBalanceHistory();
 };
+
+function goToOrderPage(page) {
+    currentOrderPage = page;
+    handleSearch('orders', false);
+}
+
+function goToBalancePage(page) {
+    currentBalancePage = page;
+    handleSearch('balance', false);
+}
+
+function renderPagination(containerId, currentPage, totalPages, functionName) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+    }
+
+    let html = '';
+    
+    // Prev button
+    if (currentPage > 1) {
+        html += `<a href="javascript:void(0)" class="page-link" onclick="${functionName}(${currentPage - 1})"><i class="fas fa-chevron-left"></i></a>`;
+    } else {
+        html += `<span class="page-link disabled"><i class="fas fa-chevron-left"></i></span>`;
+    }
+
+    // Page numbers
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, currentPage + 2);
+
+    if (startPage > 1) {
+        html += `<a href="javascript:void(0)" class="page-link" onclick="${functionName}(1)">1</a>`;
+        if (startPage > 2) html += `<span class="page-link disabled">...</span>`;
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        if (i === currentPage) {
+            html += `<span class="page-link active">${i}</span>`;
+        } else {
+            html += `<a href="javascript:void(0)" class="page-link" onclick="${functionName}(${i})">${i}</a>`;
+        }
+    }
+
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) html += `<span class="page-link disabled">...</span>`;
+        html += `<a href="javascript:void(0)" class="page-link" onclick="${functionName}(${totalPages})">${totalPages}</a>`;
+    }
+
+    // Next button
+    if (currentPage < totalPages) {
+        html += `<a href="javascript:void(0)" class="page-link" onclick="${functionName}(${currentPage + 1})"><i class="fas fa-chevron-right"></i></a>`;
+    } else {
+        html += `<span class="page-link disabled"><i class="fas fa-chevron-right"></i></span>`;
+    }
+
+    container.innerHTML = html;
+}
