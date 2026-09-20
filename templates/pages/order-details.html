@@ -82,46 +82,65 @@
                     <span>Clonegiare.shop</span>
                 </a>
 
-                <div class="header-actions">
-                    <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
-                        <a href="javascript:void(0)" class="btn-header">
-                            <span>Khác</span>
-                        </a>
-                        <div class="misc-dropdown" id="miscDropdown">
-                            <a href="/api"> API</a>
-                            <a href="/support"> Hỗ trợ</a>
-                            <a href="/blog"> Blog</a>
+                                <div class="header-actions">
+                    <div class="header-actions-inner" id="headerActionsInner">
+                        <div class="mobile-menu-close" onclick="toggleMobileHeaderMenu(event)">
+                            <i class="fas fa-times"></i>
+                        </div>
+                        <div class="misc-container" id="miscContainer" onclick="toggleMiscMenu(event)">
+                            <a href="javascript:void(0)" class="btn-header"><i class="fas fa-ellipsis-v"></i>
+                                <span>Khác</span></a>
+                            <div class="misc-dropdown" id="miscDropdown">
+                                <a href="/api">API</a>
+                                <a href="/support">Hỗ trợ</a>
+                                <a href="/blog">Blog</a>
+                            </div>
+                        </div>
+                        <div class="tools-container auth-required" id="toolsContainer" style="display: none;"
+                            onclick="toggleToolsMenu(event)">
+                            <a href="javascript:void(0)" class="btn-header"><i class="fas fa-tools"></i> <span>Công
+                                    cụ</span></a>
+                            <div class="tools-dropdown" id="toolsDropdown">
+                                <a href="#/check-live">Check Live UID</a>
+                                <a href="#/random-face">Random Face</a>
+                            </div>
+                        </div>
+                        <a href="/deposit" class="btn-header auth-required desktop-only" style="display: none;"><i
+                                class="fas fa-wallet"></i> <span>Nạp tiền</span></a>
+                        <a href="/history" class="btn-header auth-required desktop-only" style="display: none;"><i
+                                class="fas fa-history"></i> <span>Lịch sử</span></a>
+                        <div class="user-profile-container">
+                            <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">?</div>
+                            <div class="user-dropdown" id="userDropdown">
+                                <a href="/profile"><i class="fas fa-user-circle"></i> Hồ sơ cá nhân</a>
+                                <a href="/history"><i class="fas fa-history"></i> Lịch sử đơn hàng</a>
+                                <a href="/deposit"><i class="fas fa-wallet"></i> Nạp tiền</a>
+                                <div class="divider"></div>
+                                <a href="/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                            </div>
                         </div>
                     </div>
-
-                    <div class="tools-container" id="toolsContainer" onclick="toggleToolsMenu(event)">
-                        <a href="javascript:void(0)" class="btn-header">
-                            <span>Công cụ</span>
-                        </a>
-                        <div class="tools-dropdown" id="toolsDropdown">
-                            <a href="#/check-live">Check Live UID</a>
-                            <a href="#/random-face">Random Face</a>
-                        </div>
+                    <div class="mobile-menu-toggle" onclick="toggleMobileHeaderMenu(event)">
+                        <i class="fas fa-bars"></i>
                     </div>
-
-                    <a href="/deposit" class="btn-header">
-                        <span>Nạp tiền</span>
-                    </a>
-
-                    <a href="/history" class="btn-header">
-                        <span>Lịch sử</span>
-                    </a>
-
-                    <div class="user-profile-container">
-                        <div class="user-avatar" id="userAvatar" onclick="toggleUserMenu(event)">TK</div>
-                        <div class="user-dropdown" id="userDropdown">
-                            <a href="/profile">Hồ sơ cá nhân</a>
-                            <a href="/history">Lịch sử đơn hàng</a>
-                            <a href="/deposit">Nạp tiền</a>
-                            <div class="divider"></div>
-                            <a href="/logout">Đăng xuất</a>
-                        </div>
-                    </div>
+                    <script>
+                        function toggleMobileHeaderMenu(event) {
+                            if (event) event.stopPropagation();
+                            const inner = document.getElementById('headerActionsInner');
+                            if (inner) {
+                                inner.classList.toggle('active');
+                            }
+                        }
+                        document.addEventListener('click', function(event) {
+                            const headerActionsInner = document.getElementById('headerActionsInner');
+                            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+                            if (headerActionsInner && headerActionsInner.classList.contains('active')) {
+                                if (!headerActionsInner.contains(event.target) && (!mobileMenuToggle || !mobileMenuToggle.contains(event.target))) {
+                                    headerActionsInner.classList.remove('active');
+                                }
+                            }
+                        });
+                    </script>
                 </div>
             </div>
 

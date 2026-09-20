@@ -29,11 +29,11 @@ def enforce_https():
 @app.route('/category/<slug>')
 def index(slug=None):
     seo_data = {
-        'title': 'FBStore - Shop Bán Acc Facebook, Via, Clone, BM Chất Lượng Số 1',
-        'description': 'FBStore - Hệ thống cung cấp tài khoản Facebook, Via cổ, Clone, Fanpage, BM quảng cáo uy tín, chất lượng. Bảo hành 1 đổi 1, hỗ trợ 24/7.',
+        'title': 'Clonegiare.shop - Shop Bán Acc Facebook, Via, Clone, BM Chất Lượng Số 1',
+        'description': 'Clonegiare.shop - Hệ thống cung cấp tài khoản Facebook, Via cổ, Clone, Fanpage, BM quảng cáo uy tín, chất lượng. Bảo hành 1 đổi 1, hỗ trợ 24/7.',
         'keywords': 'mua via facebook, mua clone facebook, mua bm, shop acc fb, tai khoan quang cao, via khang, clone gia re',
         'url': request.url,
-        'image': 'https://fbstore.com/static/images/banner.jpg' 
+        'image': 'https://clonegiare.shop/static/images/banner.jpg' 
     }
     
     if slug:
@@ -44,7 +44,7 @@ def index(slug=None):
                 cursor.execute("SELECT name, description FROM categories WHERE slug = %s", (slug,))
                 category = cursor.fetchone()
                 if category:
-                    seo_data['title'] = f"Mua {category['name']} - FBStore Chất Lượng Uy Tín"
+                    seo_data['title'] = f"Mua {category['name']} - CLonegiare.shop Chất Lượng Uy Tín"
                     if category['description']:
                          # Truncate description if too long or use it as is
                         seo_data['description'] = category['description']
@@ -99,7 +99,7 @@ def order_details(order_code):
 
 @app.route('/sitemap.xml')
 def sitemap():
-    base_url = "https://fbstore.com" # Replace with actual domain from request.host_url if needed, but hardcoded for SEO consistency is often better or use request.url_root[:-1]
+    base_url = "https://clonegiare.shop" # Replace with actual domain from request.host_url if needed, but hardcoded for SEO consistency is often better or use request.url_root[:-1]
     
     # Static pages
     pages = [

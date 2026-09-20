@@ -88,18 +88,18 @@ async function checkAuth() {
             }
 
             let dropdownHtml = `
-                        <a href="/profile">Hồ sơ cá nhân</a>
-                        <a href="/history">Lịch sử đơn hàng</a>
-                        <a href="/deposit">Nạp tiền</a>
+                        <a href="/profile"><i class="fas fa-user-circle"></i> Hồ sơ cá nhân</a>
+                        <a href="/history"><i class="fas fa-history"></i> Lịch sử đơn hàng</a>
+                        <a href="/deposit"><i class="fas fa-wallet"></i> Nạp tiền</a>
                     `;
 
             if (currentUser.role === 'admin') {
-                dropdownHtml += `<a href="/admin/dashboard" style="color: var(--primary-color);">Quản trị viên</a>`;
+                dropdownHtml += `<a href="/admin/dashboard" style="color: var(--primary-color);"><i class="fas fa-cog"></i> Quản trị viên</a>`;
             }
 
             dropdownHtml += `
                         <div class="divider"></div>
-                        <a href="/logout">Đăng xuất</a>
+                        <a href="/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
                     `;
             userDropdown.innerHTML = dropdownHtml;
         } else {
@@ -568,6 +568,8 @@ window.onclick = function (event) {
     const toolsContainer = document.getElementById('toolsContainer');
     const miscDropdown = document.getElementById('miscDropdown');
     const miscContainer = document.getElementById('miscContainer');
+    const headerActionsInner = document.getElementById('headerActionsInner');
+    const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
 
     if (event.target == checkoutModal) {
         closeCheckout();
@@ -580,6 +582,20 @@ window.onclick = function (event) {
     }
     if (miscDropdown && miscDropdown.classList.contains('active') && !miscContainer.contains(event.target)) {
         miscDropdown.classList.remove('active');
+    }
+    
+    if (headerActionsInner && headerActionsInner.classList.contains('active')) {
+        if (!headerActionsInner.contains(event.target) && (!mobileMenuToggle || !mobileMenuToggle.contains(event.target))) {
+            headerActionsInner.classList.remove('active');
+        }
+    }
+}
+
+function toggleMobileHeaderMenu(event) {
+    if (event) event.stopPropagation();
+    const inner = document.getElementById('headerActionsInner');
+    if (inner) {
+        inner.classList.toggle('active');
     }
 }
 
